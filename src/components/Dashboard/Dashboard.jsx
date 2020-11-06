@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { formatDate, setGreeting } from "../../utils/utils";
 import Greeting from '../greeting';
+import NavBtns from '../Nav/NavBtns';
 
 const Dashboard = () => {
     
@@ -8,11 +9,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard--wrapper">
             <Greeting />
-            <div className="dashboard--nav">
-                <button className="nav-btn">Jobs</button>
-                <button className="nav-btn">Calendar</button>
-                <button className="nav-btn">Logout</button>
-            </div>
+            <NavBtns activePage={'dash'} />
             <div className="dashboard--job-tracker">
                 jobtracker
             </div>
