@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import LandingPage from './components/LandingPage/LandingPage';
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -11,7 +12,7 @@ function App() {
 
   return (
     <div className="App">
-      <LandingPage click={signIn} />
+      {loggedIn ? <Dashboard /> : <LandingPage click={signIn} />}
     </div>
   );
 }
