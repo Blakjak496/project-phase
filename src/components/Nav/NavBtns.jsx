@@ -9,7 +9,7 @@ const NavBtns = (props) => {
             <div className="dashboard--nav">
                 <Link className="nav-btn" to="/jobs">Jobs</Link>
                 <Link className="nav-btn" to="/calendar">Calendar</Link>
-                <button className="nav-btn" onClick={props.click()}>Logout</button>
+                <Link className="nav-btn" onClick={props.click} to="/">Logout</Link>
             </div>
         )
     }
@@ -19,7 +19,7 @@ const NavBtns = (props) => {
             <div className="dashboard--nav">
                 <Link className="nav-btn" to="/" >Dashboard</Link>
                 <Link className="nav-btn" to="/calendar" >Calendar</Link>
-                <button className="nav-btn" onClick={props.click()}>Logout</button>
+                <Link className="nav-btn" onClick={props.click} to="/">Logout</Link>
             </div>
         )
     }
@@ -29,7 +29,7 @@ const NavBtns = (props) => {
             <div className="dashboard--nav">
                 <Link className="nav-btn" to="/" >Dashboard</Link>
                 <Link className="nav-btn" to="/jobs">Jobs</Link>
-                <button className="nav-btn" onClick={props.click()}>Logout</button>
+                <Link className="nav-btn" onClick={props.click} to="/">Logout</Link>
             </div>
         )
     }

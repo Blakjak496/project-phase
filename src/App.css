@@ -126,6 +126,118 @@
   align-items: center;
 }
 
+.jobs-page--wrapper {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100vw;
+  height: auto;
+  min-width: 280px;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.jobs-page--jobs-list {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 80%;
+  min-width: 280px;
+  height: 50vh;
+}
+
+.jobs-page--jobs-list-header {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 2rem;
+}
+
+.jobs-page--jobs-list-main {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 280px;
+  height: calc(100% - 2rem);
+  align-items: center;
+  justify-content: center;
+}
+
+.jobs-page--jobs-list ul {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  min-width: 280px;
+  list-style: none;
+  padding: 0;
+}
+
+.job-card--wrapper {
+  display: flex;
+  box-sizing: border-box;
+  background: beige;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.job-card--link {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 5rem;
+  min-width: 280px;
+
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px;
+  text-decoration: none;
+}
+
+.job-card--title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.job-card--client {
+  font-size: 1rem;
+}
+
+.job-card--deadline {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.add-job--wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-job--input {
+  display: flex;
+  width: 75%;
+  height: 2rem;
+  min-width: 280px;
+  font-size: 1.5rem;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.add-job--btn {
+  display: flex;
+  width: 5rem;
+  height: 2rem;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
 @media screen and (min-width: 1000px) {
   .landing-page--description-wrapper {
     display: flex;
