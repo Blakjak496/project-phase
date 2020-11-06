@@ -2,17 +2,28 @@ import { useState } from 'react';
 import './App.css';
 import LandingPage from './components/LandingPage/LandingPage';
 import Dashboard from './components/Dashboard/Dashboard';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+
+import firebaseConfig from './firebaseConfig';
+
+firebase.initializeApp(firebaseConfig);
+
+
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const signIn = (event) => {
-    setLoggedIn(true);
+  const signIn = (user) => {
+    setCurrentUser(user);
   }
+
+  console.log(currentUser);
 
   return (
     <div className="App">
-      {loggedIn ? <Dashboard /> : <LandingPage click={signIn} />}
+      {currentUser ? <Dashboard /> : <LandingPage click={signIn} />}
     </div>
   );
 }
