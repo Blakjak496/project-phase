@@ -34,6 +34,17 @@ const NavBtns = (props) => {
         )
     }
 
+    const jobNav = () => {
+        return (
+            <div className="dashboard--nav">
+                <Link className="nav-btn" to="/">Dashboard</Link>
+                <Link className="nav-btn" to="/jobs">Jobs</Link>
+                <Link className="nav-btn" to="/calendar">Calendar</Link>
+                <Link className="nav-btn" onClick={props.click} to="/">Logout</Link>
+            </div>
+        )
+    }
+
     switch(page) {
         case 'dash':
             return dashNav();
@@ -41,6 +52,8 @@ const NavBtns = (props) => {
             return jobsNav();
         case 'calendar':
             return calendarNav();
+        case 'job':
+            return jobNav();
     }
 }
 

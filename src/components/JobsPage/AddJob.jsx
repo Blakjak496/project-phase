@@ -11,8 +11,7 @@ const AddJob = (props) => {
     const [clientInput, setClientInput] = useState('');
     const [deadlineInput, setDeadlineInput] = useState('');
     const [overviewInput, setOverviewInput] = useState('');
-    const {currentUser} = useContext(UserContext);
-    const firestore = firebase.firestore();
+    const {currentUser, accountsRef} = useContext(UserContext);
 
     const handleChange = (event) => {
         switch(event.target.id) {
@@ -32,30 +31,35 @@ const AddJob = (props) => {
             default:
                 break;
         };
+        
     }
 
     const submitJob = () => {
-        const docRef = firestore.collection('accounts').doc(currentUser.uid);
+        const jobsRef = accountsRef.collection('jobs').doc(`${props.newJob}`)        
 
-        docRef.update({jobs: firebase.firestore.FieldValue.arrayUnion({
+        jobsRef.set({
             title: titleInput,
             clientName: clientInput,
             deadline: deadlineInput,
             overview: overviewInput,
-            id: 2,
+            id: props.newJob,
             tasks: []
-        })}).then(doc => {
+        }).then(doc => {
             console.log('success!')
-            console.log(props.openForm)
         })
+        props.openForm()
         
     }
 
     return (
         <div className="add-job--wrapper">
+            <p>Job Title:</p>
             <input id="title" className="add-job--input" type="text" placeholder="Job Title..." onChange={handleChange} />
+            <p>Client Name:</p>
             <input id="client" className="add-job--input" type="text" placeholder="Client Name..." onChange={handleChange} />
+            <p>Deadline Date:</p>
             <input id="deadline" className="add-job--input" type="date" onChange={handleChange} />
+            <p>Job Overview:</p>
             <input id="overview" className="add-job--input" type="text" placeholder="Job Overview" onChange={handleChange}/>
             <button className="add-job--btn" onClick={submitJob}>Submit</button>
         </div>
