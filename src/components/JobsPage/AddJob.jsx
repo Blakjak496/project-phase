@@ -31,20 +31,20 @@ const AddJob = (props) => {
             default:
                 break;
         };
-        console.log(deadlineInput)
+        
     }
 
     const submitJob = () => {
-        
+        const jobsRef = accountsRef.collection('jobs').doc(`${props.newJob}`)        
 
-        accountsRef.update({jobs: firebase.firestore.FieldValue.arrayUnion({
+        jobsRef.set({
             title: titleInput,
             clientName: clientInput,
             deadline: deadlineInput,
             overview: overviewInput,
-            id: 2,
+            id: props.newJob,
             tasks: []
-        })}).then(doc => {
+        }).then(doc => {
             console.log('success!')
         })
         props.openForm()
@@ -53,9 +53,13 @@ const AddJob = (props) => {
 
     return (
         <div className="add-job--wrapper">
+            <p>Job Title:</p>
             <input id="title" className="add-job--input" type="text" placeholder="Job Title..." onChange={handleChange} />
+            <p>Client Name:</p>
             <input id="client" className="add-job--input" type="text" placeholder="Client Name..." onChange={handleChange} />
+            <p>Deadline Date:</p>
             <input id="deadline" className="add-job--input" type="date" onChange={handleChange} />
+            <p>Job Overview:</p>
             <input id="overview" className="add-job--input" type="text" placeholder="Job Overview" onChange={handleChange}/>
             <button className="add-job--btn" onClick={submitJob}>Submit</button>
         </div>
