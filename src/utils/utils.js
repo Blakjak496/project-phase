@@ -108,4 +108,13 @@ const setGreeting = (today) => {
     return newGreeting;
 }
 
-module.exports = {formatDate, setGreeting}
+const formatDeadline = (dateStr) => {
+  const arr = dateStr.split('-');
+  const year = arr[0];
+  const month = arr[1];
+  const day = arr[2];
+
+  return `${day}/${month}/${year}`;
+}
+
+module.exports = {formatDate, setGreeting, formatDeadline}
