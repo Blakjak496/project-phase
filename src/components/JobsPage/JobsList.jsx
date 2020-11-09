@@ -10,7 +10,12 @@ const JobsList = ({jobs}) => {
     const openForm = () => {
         setFormOpen(!formOpen)
     }
-
+//*I am refactoring this component to be a CardList component.
+//*It will receive 2 things on props. a function to fetch data from the DB,
+//*and an activePage (already being passed to NavBtns).
+//*This will allow the list to fetch the appropriate data and display the correct
+//*type of card based on what it receives on props and remove the need for
+//*multiple List components.
     
     
     return (
