@@ -21,8 +21,9 @@ function App() {
   
   
   const firestore = firebase.firestore();
+  let accountsRef;
   if (currentUser) {
-    const accountsRef = firestore.collection('accounts').doc(currentUser.uid);
+    accountsRef = firestore.collection('accounts').doc(currentUser.uid);
     const exists = accountsRef.get().then(res => { return res.exists});
     if (!exists) {
       accountsRef.set({
@@ -50,7 +51,7 @@ function App() {
 
   
   return (
-    <UserProvider value={{currentUser}}>
+    <UserProvider value={{currentUser, accountsRef}}>
       <div className="App">
         <Router>
           {currentUser ? <Dashboard click={signOut} path="/" /> : <LandingPage click={signIn} path="/" />}

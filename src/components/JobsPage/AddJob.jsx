@@ -11,8 +11,7 @@ const AddJob = (props) => {
     const [clientInput, setClientInput] = useState('');
     const [deadlineInput, setDeadlineInput] = useState('');
     const [overviewInput, setOverviewInput] = useState('');
-    const {currentUser} = useContext(UserContext);
-    const firestore = firebase.firestore();
+    const {currentUser, accountsRef} = useContext(UserContext);
 
     const handleChange = (event) => {
         switch(event.target.id) {
@@ -32,12 +31,13 @@ const AddJob = (props) => {
             default:
                 break;
         };
+        console.log(deadlineInput)
     }
 
     const submitJob = () => {
-        const docRef = firestore.collection('accounts').doc(currentUser.uid);
+        
 
-        docRef.update({jobs: firebase.firestore.FieldValue.arrayUnion({
+        accountsRef.update({jobs: firebase.firestore.FieldValue.arrayUnion({
             title: titleInput,
             clientName: clientInput,
             deadline: deadlineInput,
@@ -46,8 +46,8 @@ const AddJob = (props) => {
             tasks: []
         })}).then(doc => {
             console.log('success!')
-            console.log(props.openForm)
         })
+        props.openForm()
         
     }
 

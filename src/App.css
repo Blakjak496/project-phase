@@ -173,6 +173,7 @@
   min-width: 280px;
   list-style: none;
   padding: 0;
+  overflow-y: auto;
 }
 
 .job-card--wrapper {
