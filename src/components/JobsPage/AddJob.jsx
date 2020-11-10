@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import {formatDeadline} from '../../utils/utils';
+import {formatDeadline, formatEventDate} from '../../utils/utils';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -11,6 +11,7 @@ const AddJob = (props) => {
     const [clientInput, setClientInput] = useState('');
     const [deadlineInput, setDeadlineInput] = useState('');
     const [overviewInput, setOverviewInput] = useState('');
+    const [newEventId, setNewEventId] = useState(1);
     const {currentUser, accountsRef} = useContext(UserContext);
 
     const handleChange = (event) => {
@@ -35,7 +36,13 @@ const AddJob = (props) => {
     }
 
     const submitJob = () => {
-        const jobsRef = accountsRef.collection('jobs').doc(`${props.newJob}`)        
+        const jobsRef = accountsRef.collection('jobs').doc(`${props.newJob}`);
+        const eventsRef = accountsRef.collection('events');
+        
+        eventsRef.get().then((res) => {setNewEventId(res.docs.length+1)});
+        console.log(newEventId)
+        const newEventRef = eventsRef.doc(`${newEventId+1}`);
+        const eventDate = formatEventDate(deadlineInput); 
 
         jobsRef.set({
             title: titleInput,
@@ -43,10 +50,25 @@ const AddJob = (props) => {
             deadline: deadlineInput,
             overview: overviewInput,
             id: props.newJob,
-            tasks: []
+            tasks: [],
+            tracked: false
         }).then(doc => {
             console.log('success!')
         })
+
+        newEventRef.set({
+            id: newEventId,
+            title: titleInput,
+            start: eventDate,
+            jobId: props.newJob,
+        })
+        .then((res) => {
+            console.log('event created');
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+
         props.openForm()
         
     }
