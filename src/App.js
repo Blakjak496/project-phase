@@ -11,6 +11,8 @@ import 'firebase/firestore';
 import firebaseConfig from './firebaseConfig';
 import JobsPage from './components/JobsPage/JobsPage';
 import JobPage from './components/JobPage/JobPage';
+import CalendarPage from './components/Calendar/CalendarPage';
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -22,7 +24,12 @@ function App() {
   const firestore = firebase.firestore();
 
   let accountsRef;
-  if (currentUser) accountsRef = firestore.collection('accounts').doc(currentUser.uid);
+  if (currentUser) {
+    accountsRef = firestore.collection('accounts').doc(currentUser.uid);
+   
+    
+  }
+  
   
   useEffect(() => {
     if (currentUser) {
@@ -46,10 +53,18 @@ function App() {
             deadline: 'dd/mm/yyyy',
             overview: 'Details about the job',
             id: 1,
-            tasks: []
+            tasks: [],
           }, {merge: true})
           .then((res) => {
             console.log('sub-collection created');
+            const eventsRef = accountsRef.collection('events').doc('1');
+            eventsRef.set({
+              title: 'event title',
+              start: '2020-11-10',
+            }, {merge: true})
+            .then((res) => {
+              console.log('events collection created');
+            })
           })
         })
         .catch((err) => {
@@ -61,6 +76,8 @@ function App() {
     }
 
   }, [currentUser, exists])
+
+  
   
   
   
@@ -80,7 +97,7 @@ function App() {
           {currentUser ? <Dashboard click={signOut} path="/" /> : <LandingPage click={signIn} path="/" />}
           <JobsPage click={signOut} path="/jobs" />
           <JobPage click={signOut} path="/jobs/:job_id" />
-
+          <CalendarPage click={signOut} path="/calendar" />
         </Router>
       </div>
 
