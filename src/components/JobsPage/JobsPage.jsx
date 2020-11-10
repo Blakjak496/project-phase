@@ -26,13 +26,16 @@ const JobsPage = (props) => {
         }
     }, [snapshot, loading])
     
-    console.log(jobs)
 
     return (
         <div className="jobs-page--wrapper">
-            <Greeting />
-            <NavBtns activePage={'jobs'} click={props.click} />
-            <JobsList jobs={jobs} activePage={'jobs'} />
+            <div className="page-header">
+                <Greeting />
+                <NavBtns activePage={'jobs'} click={props.click} />
+            </div>
+            <div className="page-body">
+                <JobsList jobs={jobs} activePage={'jobs'} />
+            </div>
         </div>
     )
 }

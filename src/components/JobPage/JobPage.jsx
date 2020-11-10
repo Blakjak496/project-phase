@@ -33,15 +33,19 @@ const JobPage = (props) => {
 
     return (
         <div className="job-page--wrapper">
-            <Greeting />
-            <NavBtns activePage={'job'} click={props.click} />
-            <div className="job-page--info">
-                <h3 className="job-page--info-title">Job Title: {jobInfo.title} </h3>
-                <h3 className="job-page--info-client">Client: {jobInfo.clientName} </h3>
-                <h3 className="job-page--info-deadline">Deadline: {jobInfo.deadline} </h3>
-                <p className="job-page--info-overview">Overview: <br/> {jobInfo.overview} </p>
+            <div className="page-header">
+                <Greeting />
+                <NavBtns activePage={'job'} click={props.click} />
             </div>
-            <JobsList jobs={tasks} jobId={props.job_id} activePage="job" />
+            <div className="page-body">
+                <div className="job-page--info">
+                    <h3 className="job-page--info-title">Job Title: {jobInfo.title} </h3>
+                    <h3 className="job-page--info-client">Client: {jobInfo.clientName} </h3>
+                    <h3 className="job-page--info-deadline">Deadline: {jobInfo.deadline} </h3>
+                    <p className="job-page--info-overview">Overview: <br/> {jobInfo.overview} </p>
+                </div>
+                <JobsList jobs={tasks} jobId={props.job_id} activePage="job" />
+            </div>
         </div>
     )
 
