@@ -117,4 +117,13 @@ const formatDeadline = (dateStr) => {
   return `${day}/${month}/${year}`;
 }
 
-module.exports = {formatDate, setGreeting, formatDeadline}
+const formatEventDate = (dateStr) => {
+  const arr = dateStr.split('/');
+  const year = arr[2];
+  const month = arr[1];
+  const day = arr[0];
+
+  return `${year}-${month}-${day}`;
+}
+
+module.exports = {formatDate, setGreeting, formatDeadline, formatEventDate}

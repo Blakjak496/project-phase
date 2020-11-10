@@ -14,7 +14,8 @@ const JobsPage = (props) => {
     const {currentUser, accountsRef} = useContext(UserContext);
 
     const jobsRef = accountsRef.collection('jobs');
-    const [snapshot, loading, error] = useCollection(jobsRef);
+    const query = jobsRef.orderBy('id');
+    const [snapshot, loading, error] = useCollection(query);
 
     useEffect(() => {
         if (!loading) {
