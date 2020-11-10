@@ -144,6 +144,14 @@ const CalendarPage = ({click}) => {
                 <NavBtns activePage={'calendar'} click={click} />
             </div>
             <div className="page-body">
+            <div className="calendar--list">
+                    <FullCalendar 
+                        plugins={[ listPlugin ]}
+                        events={events}
+                        initialView="listWeek"
+                        eventClick={(info) => {openEventModal(info)}}
+                    />
+                </div>
                 <div className="calendar">
                     <div className="calendar-btn-box">
                         <button onClick={openModal}>Add Calendar Event</button>
@@ -153,19 +161,6 @@ const CalendarPage = ({click}) => {
                         plugins={[ dayGridPlugin ]}
                         events={events}
                         initialView="dayGridMonth"
-                        height="auto"
-                        eventClick={(info) => {openEventModal(info)}}
-                    />
-                </div>
-                <div className="calendar--list">
-                    <div className="calendar-btn-box">
-                        <button onClick={openModal}>Add Calendar Event</button>
-
-                    </div>
-                    <FullCalendar 
-                        plugins={[ listPlugin ]}
-                        events={events}
-                        initialView="listMonth"
                         height="auto"
                         eventClick={(info) => {openEventModal(info)}}
                     />

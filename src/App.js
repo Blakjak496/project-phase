@@ -86,7 +86,14 @@ function App() {
   }
 
   const signOut = () => {
-    setCurrentUser(null);
+    firebase.auth().signOut()
+    .then(() => {
+      setCurrentUser(null);
+      console.log('signed out')
+    })
+    .catch((err) => {
+      console.log('sign-out error')
+    })
   }
 
   
