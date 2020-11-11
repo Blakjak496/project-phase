@@ -50,22 +50,26 @@ const AddJob = (props) => {
             deadline: deadlineInput,
             overview: overviewInput,
             createdAt: timestamp,
-            tasks: [],
             tracked: false
         }).then(doc => {
             console.log('success!')
-            eventsRef.add({
-                title: titleInput,
-                start: eventDate,
-                jobId: doc.id,
-                createdAt: timestamp,
-                type: 'job'
-            })
-            .then((res) => {
-                console.log('event created');
-            })
-            .catch((err) => {
-                console.log(err)
+            jobsRef.doc(doc.id).collection('tasks').add({
+                placeholder: true
+            }).then((res) => {
+                console.log('tasks collection created');
+                eventsRef.add({
+                    title: titleInput,
+                    start: eventDate,
+                    jobId: doc.id,
+                    createdAt: timestamp,
+                    type: 'job'
+                })
+                .then((res) => {
+                    console.log('event created');
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             })
         })
 

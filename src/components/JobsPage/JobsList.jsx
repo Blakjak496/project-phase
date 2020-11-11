@@ -43,10 +43,11 @@ const JobsList = ({ jobs, activePage, jobId }) => {
                         : <AddTask openForm={openForm} newJob={jobs.length+1} jobId={jobId} /> 
                     : <ul>
                     {jobs.map((job) => {
-                        return (
-                            <JobCard job={job} key={job.id} cardType={cardType} />
-                            )
-                    
+                        if (!job.placeholder) {
+                            return (
+                                <JobCard job={job} key={job.id} cardType={cardType} />
+                                )
+                        }
                 })}    
                 </ul>}
             </div>

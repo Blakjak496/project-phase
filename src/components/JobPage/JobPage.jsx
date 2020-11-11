@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { useDocument, useDocumentData } from 'react-firebase-hooks/firestore';
+import { useDocument, useDocumentData, useCollection } from 'react-firebase-hooks/firestore';
 import { Link } from '@reach/router';
 
 import Greeting from '../greeting';
@@ -15,25 +15,27 @@ const JobPage = (props) => {
     const [jobInfo, setJobInfo] = useState({});
     const [eventIds, setEventIds] = useState([]);
     const { currentUser, accountsRef } = useContext(UserContext);
-    const tasksRef = accountsRef.collection('jobs').doc(props.job_id);
+    const jobRef = accountsRef.collection('jobs').doc(props.job_id);
+    const tasksRef = jobRef.collection('tasks');
 
     
     
-    const [value, loading, error] = useDocument(tasksRef);
+    const [tasksList, loading, error] = useCollection(tasksRef);
 
     useEffect(() => {
         if (!loading) {
-            const newTasks = value.data().tasks.map(task => {
-                return task;
+            const newTasks = tasksList.docs.map(task => {
+                const taskData = task.data();
+                const taskWithId = {...taskData, id: task.id}
+                return taskWithId;
             });
-            const jobData = value.data();
             setTasks(newTasks);
-            setJobInfo(jobData);
         }
-    }, [value, loading])
+        jobRef.get().then((res) => {setJobInfo(res.data())})
+    }, [tasksList, loading])
    
     const trackJob = () => {
-        tasksRef.update({tracked: !jobInfo.tracked})
+        jobRef.update({tracked: !jobInfo.tracked})
         .then((res) => {
             console.log('job tracked!')
         })
@@ -50,9 +52,12 @@ const JobPage = (props) => {
             res.docs.forEach((doc) => {
                 eventsRef.doc(doc.id).delete();
             })
-            tasksRef.delete();
+            tasksList.forEach(task => {
+                tasksRef.doc(task.id).delete();            
             })
-        }
+            jobRef.delete();
+        })
+    }
     
         
     
