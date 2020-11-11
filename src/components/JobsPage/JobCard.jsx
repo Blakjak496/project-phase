@@ -27,7 +27,7 @@ const JobCard = ({job, cardType}) => {
     else if (cardType === 'tracked') {
         return (
             <div className="job-card--wrapper">
-                <Link className="job-card--link" to={`jobs/${job.id}`}>
+                <Link className="job-card--link" to={`/jobs/${job.id}`}>
                     <p className="job-card--title">{job.title} </p>
                     <p className="job-card--task">{job.task} </p>
                     <p className="job-card--deadline">{job.deadline} </p>
