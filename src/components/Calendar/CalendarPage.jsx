@@ -24,13 +24,33 @@ const CalendarPage = ({click}) => {
 
     useEffect(() => {
         if (!loading) {
-          const newEvents = calEvents.docs.map(event => {
-              const eventWithId = {...event.data(), id: event.id};
-              return eventWithId;
+            const newEvents = calEvents.docs.map(event => {
+                const eventData = event.data();
+                let eventColour;
+                switch(eventData.type) {
+                    case 'job':
+                        eventColour = 'red';
+                        break;
+                    case 'task':
+                        eventColour = 'blue';
+                        break;
+                    case 'calendar':
+                        eventColour = 'purple';
+                        break;
+                    default:
+                        break;
+              }
+                const eventWithId = {
+                    ...eventData,
+                    id: event.id,
+                    backgroundColor: eventColour,
+                    borderColor: eventColour
+                };
+                return eventWithId;
           })
-          setEvents(newEvents)
+            setEvents(newEvents)
         }
-      }, [calEvents, loading])
+    }, [calEvents, loading])
       
     let modalClass = modalOpen ? 'add-event-modal' : 'add-event-modal--closed';
     let selectedEventClass = selectedEvent ? 'selected-event' : 'selected-event--closed';
