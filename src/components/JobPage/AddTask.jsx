@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import UserContext from "../UserContext";
-import { formatDeadline } from '../../utils/utils';
+import { formatDeadline, formatEventDate } from '../../utils/utils';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
@@ -10,6 +10,8 @@ const AddTask = (props) => {
     const [deadlineInput, setDeadlineInput] = useState('');
     const { accountsRef } = useContext(UserContext);
     const tasksRef = accountsRef.collection('jobs').doc(props.jobId);
+
+    console.log('rendering')
 
     const handleChange = (event) => {
         switch(event.target.id) {
@@ -30,6 +32,10 @@ const AddTask = (props) => {
     }
 
     const submitTask = () => {
+        const eventsRef = accountsRef.collection('events');
+        
+        const eventDate = formatEventDate(deadlineInput); 
+
         tasksRef.update({tasks: firebase.firestore.FieldValue.arrayUnion({
             task: taskInput,
                 expected: expectedInput,
@@ -38,6 +44,19 @@ const AddTask = (props) => {
                 complete: false,
         })}).then(doc => {
             console.log('success!')
+        })
+
+        eventsRef.add({
+            title: taskInput,
+            start: eventDate,
+            jobId: props.jobId,
+            type: 'task'
+        })
+        .then((res) => {
+            console.log('event created');
+        })
+        .catch((err) => {
+            console.log(err)
         })
         props.openForm();
     }
