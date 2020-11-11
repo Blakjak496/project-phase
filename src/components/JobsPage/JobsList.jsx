@@ -33,9 +33,9 @@ const JobsList = ({ jobs, activePage, jobId }) => {
 
     return (
         <div className="jobs-page--jobs-list">
-            <div className="jobs-page--jobs-list-header">
+            {activePage === 'dashboard' ? null : <div className="jobs-page--jobs-list-header">
                 <button className="add-job--btn" onClick={openForm}>Add</button>
-            </div>
+            </div>}
             <div className="jobs-page--jobs-list-main">
                 {formOpen ? 
                     JobOrTask() ? 
