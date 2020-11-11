@@ -26,7 +26,6 @@ const Dashboard = ({click}) => {
         }
     }, [trackedJobs, loading])
 
-    console.log(jobs)
 
     return (
         <div className="dashboard--wrapper">
