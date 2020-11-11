@@ -211,6 +211,15 @@
   margin-bottom: 1rem;
 }
 
+.job-card--wrapper--complete {
+  display: flex;
+  box-sizing: border-box;
+  background: purple;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
 .job-card--link {
   display: flex;
   box-sizing: border-box;
@@ -224,11 +233,36 @@
   text-decoration: none;
 }
 
+.job-card--btns {
+  display: flex;
+  text-decoration: none;
+}
+
+.job-card--task-control {
+  display: flex;
+  box-sizing: border-box;
+  padding: 4px 12px;
+  height: 2rem;
+  width: 5rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
 .job-card--title {
   display: flex;
   box-sizing: border-box;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.job-card--title-complete {
+  display: flex;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: line-through;
 }
 
 .job-card--client {
@@ -242,6 +276,14 @@
   box-sizing: border-box;
   font-size: 1rem;
   font-weight: bold;
+}
+
+.job-card--deadline-complete {
+  display: flex;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: line-through;
 }
 
 .add-job--wrapper {

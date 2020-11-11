@@ -9,9 +9,8 @@ const AddTask = (props) => {
     const [expectedInput, setExpectedInput] = useState('');
     const [deadlineInput, setDeadlineInput] = useState('');
     const { accountsRef } = useContext(UserContext);
-    const tasksRef = accountsRef.collection('jobs').doc(props.jobId);
-
-    console.log('rendering')
+    const jobRef = accountsRef.collection('jobs').doc(props.jobId);
+    const tasksRef = jobRef.collection('tasks');
 
     const handleChange = (event) => {
         switch(event.target.id) {
@@ -36,13 +35,13 @@ const AddTask = (props) => {
         
         const eventDate = formatEventDate(deadlineInput); 
 
-        tasksRef.update({tasks: firebase.firestore.FieldValue.arrayUnion({
+        tasksRef.add({
             task: taskInput,
-                expected: expectedInput,
-                deadline: deadlineInput,
-                id: props.newJob,
-                complete: false,
-        })}).then(doc => {
+            expected: expectedInput,
+            deadline: deadlineInput,
+            jobId: props.jobId,
+            complete: false,
+        }).then(doc => {
             console.log('success!')
         })
 
