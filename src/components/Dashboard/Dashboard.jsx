@@ -18,13 +18,15 @@ const Dashboard = ({click}) => {
     useEffect(() => {
         if (!loading) {
             const newJobs = trackedJobs.docs.map(doc => {
-                return doc.data();
+                const job = doc.data();
+                const jobWithId = {...job, id: doc.id};
+                return jobWithId;
             })
             setJobs(newJobs);
         }
     }, [trackedJobs, loading])
 
-    
+    console.log(jobs)
 
     return (
         <div className="dashboard--wrapper">
