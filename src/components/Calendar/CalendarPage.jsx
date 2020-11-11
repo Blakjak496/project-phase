@@ -25,7 +25,8 @@ const CalendarPage = ({click}) => {
     useEffect(() => {
         if (!loading) {
           const newEvents = calEvents.docs.map(event => {
-              return event.data();
+              const eventWithId = {...event.data(), id: event.id};
+              return eventWithId;
           })
           setEvents(newEvents)
         }
@@ -58,16 +59,16 @@ const CalendarPage = ({click}) => {
       }
 
     const submitEvent = (event) => {
-        eventsRef.doc(`${events.length+1}`).set(endInput ? {
-            id: `${events.length+1}`,
+        eventsRef.add(endInput ? {
             title: titleInput,
             start: startInput,
-            end: endInput
+            end: endInput,
+            type: 'calendar'
         } : 
         {
-            id: `${events.length+1}`,
             title: titleInput,
-            start: startInput
+            start: startInput,
+            type: 'calendar'
         }).then(doc => {
             console.log('event created!')
         })
@@ -80,12 +81,14 @@ const CalendarPage = ({click}) => {
     }
 
     const openEventModal = (info) => {
-        console.log(info.event.id)
+        const matchingEvent = events.find(doc => {return doc.id === info.event.id})
         if (!info.event.end) {
             setSelectedEvent({
                 id: info.event.id,
                 title: info.event.title,
                 start: `${formatDate(info.event.start)} ${info.event.start.getFullYear()}`,
+                type: matchingEvent.type,
+
                 
             })
         }
@@ -94,7 +97,8 @@ const CalendarPage = ({click}) => {
                 id: info.event.id,
                 title: info.event.title,
                 start: `${formatDate(info.event.start)} ${info.event.start.getFullYear()}`,
-                end: `${formatDate(info.event.end)} ${info.event.end.getFullYear()}`
+                end: `${formatDate(info.event.end)} ${info.event.end.getFullYear()}`,
+                type: matchingEvent.type,
             })
 
         } 
@@ -118,27 +122,26 @@ const CalendarPage = ({click}) => {
                 <button onClick={submitEvent}>Submit</button>
                 <button onClick={openModal}>Cancel</button>
             </div>
-            <div className={selectedEventClass}>
+            {selectedEvent ? <div className={selectedEventClass}>
                 <div className="selected-event--header">
                     <span className="selected-event--date">
                         <p>Start Date:</p>
-                        {selectedEvent ? <p>{selectedEvent.start} </p> : null}
+                        <p>{selectedEvent.start} </p>
                     </span>
-                    {selectedEvent ? selectedEvent.end ? <span>
+                    {selectedEvent.end ? <span>
                         <p>End Date:</p>
-                        {selectedEvent ? <p>{selectedEvent.end} </p> : null}
-                    </span> : null
-                    : null }
+                        <p>{selectedEvent.end} </p>
+                    </span> : null}
                     
                 </div>
                 <div className="selected-event--main">
-                    {selectedEvent ? <p>{selectedEvent.title} </p> : null}
+                    <p>{selectedEvent.title} </p>
                     <div className="selected-event--btns">
                         <button onClick={closeEventModal} >Close</button>
-                        <button onClick={deleteEvent}>Delete</button>
+                        {selectedEvent.type === 'calendar' ? <button onClick={deleteEvent}>Delete</button> : null}
                     </div>
                 </div>
-            </div>
+            </div> : null}
             <div className="page-header">
                 <Greeting />
                 <NavBtns activePage={'calendar'} click={click} />

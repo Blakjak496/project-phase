@@ -424,9 +424,8 @@
   position: absolute;
   z-index: 100;
   width: 100%;
-  height: auto;
+  height: 100%;
   min-width: 280px;
-  min-height: 100vh;
   background: rgba(0, 0, 0, 0.7);
   align-items: center;
   justify-content: center;

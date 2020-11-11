@@ -12,6 +12,7 @@ const AddJob = (props) => {
     const [deadlineInput, setDeadlineInput] = useState('');
     const [overviewInput, setOverviewInput] = useState('');
     const [newEventId, setNewEventId] = useState(1);
+    const [newJobId, setNewJobId] = useState('');
     const {currentUser, accountsRef} = useContext(UserContext);
 
     const handleChange = (event) => {
@@ -36,43 +37,43 @@ const AddJob = (props) => {
     }
 
     const submitJob = () => {
-        const jobsRef = accountsRef.collection('jobs').doc(`${props.newJob}`);
+        const jobsRef = accountsRef.collection('jobs');
         const eventsRef = accountsRef.collection('events');
         
-        eventsRef.get().then((res) => {setNewEventId(res.docs.length+1)});
-        console.log(newEventId)
-        const newEventRef = eventsRef.doc(`${newEventId+1}`);
-        const eventDate = formatEventDate(deadlineInput); 
+        const eventDate = formatEventDate(deadlineInput);
+        const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        console.log(timestamp)
 
-        jobsRef.set({
+        jobsRef.add({
             title: titleInput,
             clientName: clientInput,
             deadline: deadlineInput,
             overview: overviewInput,
-            id: props.newJob,
+            createdAt: timestamp,
             tasks: [],
             tracked: false
         }).then(doc => {
             console.log('success!')
+            eventsRef.add({
+                title: titleInput,
+                start: eventDate,
+                jobId: doc.id,
+                createdAt: timestamp,
+                type: 'job'
+            })
+            .then((res) => {
+                console.log('event created');
+            })
+            .catch((err) => {
+                console.log(err)
+            })
         })
 
-        newEventRef.set({
-            id: newEventId,
-            title: titleInput,
-            start: eventDate,
-            jobId: props.newJob,
-        })
-        .then((res) => {
-            console.log('event created');
-        })
-        .catch((err) => {
-            console.log(err)
-        })
 
         props.openForm()
         
     }
-
+    
     return (
         <div className="add-job--wrapper">
             <p>Job Title:</p>

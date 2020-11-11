@@ -13,8 +13,11 @@ import JobsList from '../JobsPage/JobsList';
 const JobPage = (props) => {
     const [tasks, setTasks] = useState([]);
     const [jobInfo, setJobInfo] = useState({});
+    const [eventIds, setEventIds] = useState([]);
     const { currentUser, accountsRef } = useContext(UserContext);
     const tasksRef = accountsRef.collection('jobs').doc(props.job_id);
+
+    
     
     const [value, loading, error] = useDocument(tasksRef);
 
@@ -41,16 +44,18 @@ const JobPage = (props) => {
 
     const deleteJob = () => {
         const eventsRef = accountsRef.collection('events');
-        const query = eventsRef.where('jobId', '==', parseInt(props.job_id));
+        const query = eventsRef.where('jobId', '==', props.job_id);
         
         query.get().then((res) => {
-            if (res.docs.length) {
-                const eventRef = eventsRef.doc(res.docs[0].id)
-                eventRef.delete();
-            }
-        });
-        tasksRef.delete();
-    }
+            res.docs.forEach((doc) => {
+                eventsRef.doc(doc.id).delete();
+            })
+            tasksRef.delete();
+            })
+        }
+    
+        
+    
 
 
     return (

@@ -14,20 +14,21 @@ const JobsPage = (props) => {
     const {currentUser, accountsRef} = useContext(UserContext);
 
     const jobsRef = accountsRef.collection('jobs');
-    const query = jobsRef.orderBy('id');
+    const query = jobsRef.orderBy('createdAt');
     const [snapshot, loading, error] = useCollection(query);
 
     useEffect(() => {
         if (!loading) {
             const newJobs = snapshot.docs.map(doc => {
-                return doc.data();
+                const job = doc.data();
+                const jobWithId = {...job, id: doc.id};
+                return jobWithId;
             })
             setJobs(newJobs);
 
         }
     }, [snapshot, loading])
     
-
     return (
         <div className="jobs-page--wrapper">
             <div className="page-header">
