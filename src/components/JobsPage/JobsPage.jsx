@@ -9,9 +9,9 @@ import NavBtns from '../Nav/NavBtns';
 import UserContext from "../UserContext";
 import JobsList from './JobsList';
 
-const JobsPage = (props) => {
+const JobsPage = () => {
     const [jobs, setJobs] = useState([]);
-    const {currentUser, accountsRef} = useContext(UserContext);
+    const { accountsRef, activePage, setActivePage } = useContext(UserContext);
 
     const jobsRef = accountsRef.collection('jobs');
     const query = jobsRef.orderBy('createdAt');
@@ -28,16 +28,15 @@ const JobsPage = (props) => {
 
         }
     }, [snapshot, loading])
+
+    useEffect(() => {
+        setActivePage('jobs');
+    }, [])
     
     return (
         <div className="jobs-page--wrapper">
-            <div className="page-header">
-                <Greeting />
-                <NavBtns activePage={'jobs'} click={props.click} />
-            </div>
-            <div className="page-body">
-                <JobsList jobs={jobs} activePage={'jobs'} />
-            </div>
+            <h2 className="jobs-page--title">Your Current Jobs</h2>
+            <JobsList jobs={jobs} activePage={activePage} />
         </div>
     )
 }

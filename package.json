@@ -15,6 +15,7 @@
     "firebase-tools": "^8.15.1",
     "firebaseui": "^4.7.1",
     "react": "^17.0.1",
+    "react-burger-menu": "^2.9.0",
     "react-dom": "^17.0.1",
     "react-firebase-hooks": "^2.2.0",
     "react-scripts": "4.0.0",

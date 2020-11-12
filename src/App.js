@@ -12,6 +12,9 @@ import firebaseConfig from './firebaseConfig';
 import JobsPage from './components/JobsPage/JobsPage';
 import JobPage from './components/JobPage/JobPage';
 import CalendarPage from './components/Calendar/CalendarPage';
+import Greeting from './components/greeting';
+import NavBtns from './components/Nav/NavBtns';
+
 
 
 firebase.initializeApp(firebaseConfig);
@@ -21,6 +24,7 @@ firebase.initializeApp(firebaseConfig);
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [exists, setExists] = useState(true);
+  const [activePage, setActivePage] = useState('dash');
   const firestore = firebase.firestore();
 
   let accountsRef;
@@ -75,7 +79,7 @@ function App() {
       
     }
 
-  }, [currentUser, exists])
+  }, [currentUser, exists, accountsRef])
 
   
   
@@ -89,6 +93,7 @@ function App() {
     firebase.auth().signOut()
     .then(() => {
       setCurrentUser(null);
+      setActivePage('dash');
       console.log('signed out')
     })
     .catch((err) => {
@@ -96,16 +101,28 @@ function App() {
     })
   }
 
-  
+  console.log(activePage)  
   return (
-    <UserProvider value={{currentUser, accountsRef}}>
-      <div className="App">
-        <Router>
-          {currentUser ? <Dashboard click={signOut} path="/" /> : <LandingPage click={signIn} path="/" />}
-          <JobsPage click={signOut} path="/jobs" />
-          <JobPage click={signOut} path="/jobs/:job_id" />
-          <CalendarPage click={signOut} path="/calendar" />
-        </Router>
+    <UserProvider value={{currentUser, accountsRef, activePage, setActivePage}}>
+      <div id={"app"} className="App">
+        
+        {currentUser ?
+        <> 
+        <div className="page-header">
+          <Greeting />
+          <NavBtns click={signOut} />
+          
+        </div>
+        <div id={"page-body"} className="page-body">
+          <Router className="router" primary={false}>
+            <Dashboard path="/" />
+            <JobsPage path="/jobs" />
+            <JobPage path="/jobs/:job_id" />
+            <CalendarPage path="/calendar" />
+          </Router>
+        </div> 
+        </>
+        : <LandingPage click={signIn} path="/" />}
       </div>
 
     </UserProvider>

@@ -8,6 +8,7 @@ const AddTask = (props) => {
     const [taskInput, setTaskInput] = useState('');
     const [expectedInput, setExpectedInput] = useState('');
     const [deadlineInput, setDeadlineInput] = useState('');
+    const [numDeadline, setNumDeadline] = useState(0);
     const { accountsRef } = useContext(UserContext);
     const jobRef = accountsRef.collection('jobs').doc(props.jobId);
     const tasksRef = jobRef.collection('tasks');
@@ -16,6 +17,7 @@ const AddTask = (props) => {
         switch(event.target.id) {
             case 'task':
                 setTaskInput(event.target.value);
+                event.target.classList.remove('add-job--incomplete-field')
                 break;
             case 'expected':
                 const formattedExpected = formatDeadline(event.target.value);
@@ -23,48 +25,73 @@ const AddTask = (props) => {
                 break;
             case 'deadline':
                 const formattedDeadline = formatDeadline(event.target.value);
+                const date = new Date(event.target.value);
+                const deadlineNumber = date.valueOf();
+                setNumDeadline(deadlineNumber);
                 setDeadlineInput(formattedDeadline);
+                event.target.classList.remove('add-job--incomplete-field')
                 break;
             default:
                 break;
         };
     }
 
-    const submitTask = () => {
-        const eventsRef = accountsRef.collection('events');
-        
-        const eventDate = formatEventDate(deadlineInput); 
+    const submitTask = (event) => {
 
-        tasksRef.add({
-            task: taskInput,
-            expected: expectedInput,
-            deadline: deadlineInput,
-            jobId: props.jobId,
-            complete: false,
-        }).then(doc => {
-            console.log('success!')
-        })
-
-        eventsRef.add({
-            title: taskInput,
-            start: eventDate,
-            jobId: props.jobId,
-            type: 'task'
-        })
-        .then((res) => {
-            console.log('event created');
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-        props.openForm();
+        if (taskInput && deadlineInput) {
+            const eventsRef = accountsRef.collection('events');
+            
+            const eventDate = formatEventDate(deadlineInput); 
+    
+            const newTask = {
+                task: taskInput,
+                deadline: deadlineInput,
+                numDeadline,
+                jobId: props.jobId,
+                complete: false,
+            };
+    
+            if (expectedInput) newTask.expected = expectedInput;
+    
+            tasksRef.add(newTask)
+            .then(doc => {
+                console.log('success!')
+            })
+    
+            eventsRef.add({
+                title: taskInput,
+                start: eventDate,
+                jobId: props.jobId,
+                type: 'task',
+                complete: false
+            })
+            .then((res) => {
+                console.log('event created');
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            props.openForm();
+        } else {
+            const elements = event.target.parentElement.children;
+            const arr = [...elements];
+            arr.forEach(item => {
+                if (item.id === 'task' && !item.value) {
+                    item.classList.add('add-job--incomplete-field');
+                    console.log(item.classList)
+                };
+                if (item.id === 'deadline' && !item.value) {
+                    item.classList.add('add-job--incomplete-field');
+                }
+            })
+        }
     }
 
     return (
         <div className="add-job--wrapper">
             <p>The Task:</p>
             <input id="task" className="add-job--input" type="text" placeholder="Task..." onChange={handleChange} />
-            <p>Expected Completion Date:</p>
+            <p>Expected Completion Date (optional):</p>
             <input id="expected" className="add-job--input" type="date" onChange={handleChange} />
             <p>Deadline Date:</p>
             <input id="deadline" className="add-job--input" type="date" onChange={handleChange} />

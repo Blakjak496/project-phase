@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import JobCard from './JobCard';
 import AddJob from './AddJob';
 import AddTask from '../JobPage/AddTask';
+import UserContext from '../UserContext';
 
-const JobsList = ({ jobs, activePage, jobId }) => {
+const JobsList = ({ jobs, jobId }) => {
     const [formOpen, setFormOpen] = useState(false);
+    const {activePage} = useContext(UserContext);
 
     const openForm = () => {
         setFormOpen(!formOpen)
@@ -19,7 +21,7 @@ const JobsList = ({ jobs, activePage, jobId }) => {
         case 'job':
             cardType= 'task';
             break;
-        case 'dashboard':
+        case 'dash':
             cardType = 'tracked';
             break;
         default:
@@ -33,7 +35,7 @@ const JobsList = ({ jobs, activePage, jobId }) => {
 
     return (
         <div className="jobs-page--jobs-list">
-            {activePage === 'dashboard' ? null : <div className="jobs-page--jobs-list-header">
+            {activePage === 'dash' ? null : <div className="jobs-page--jobs-list-header">
                 <button className="add-job--btn" onClick={openForm}>Add</button>
             </div>}
             <div className="jobs-page--jobs-list-main">
@@ -42,13 +44,14 @@ const JobsList = ({ jobs, activePage, jobId }) => {
                         <AddJob openForm={openForm} newJob={jobs.length+1} />  
                         : <AddTask openForm={openForm} newJob={jobs.length+1} jobId={jobId} /> 
                     : <ul>
-                    {jobs.map((job) => {
+                    {jobs.length ? jobs.map((job) => {
                         if (!job.placeholder) {
                             return (
                                 <JobCard job={job} key={job.id} cardType={cardType} />
                                 )
                         }
-                })}    
+                })
+            : <p className="jobs-list--no-jobs">Nothing to display</p> }    
                 </ul>}
             </div>
         </div>
