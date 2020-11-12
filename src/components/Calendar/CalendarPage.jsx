@@ -17,7 +17,7 @@ const CalendarPage = ({click}) => {
     const [startInput, setStartInput] = useState('');
     const [endInput, setEndInput] = useState('');
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const { accountsRef } = useContext(UserContext);
+    const { accountsRef, setActivePage } = useContext(UserContext);
 
     const eventsRef = accountsRef.collection('events');
     const[calEvents, loading, error] = useCollection(eventsRef);
@@ -39,18 +39,35 @@ const CalendarPage = ({click}) => {
                         break;
                     default:
                         break;
-              }
-                const eventWithId = {
-                    ...eventData,
-                    id: event.id,
-                    backgroundColor: eventColour,
-                    borderColor: eventColour
-                };
-                return eventWithId;
+                }
+                if (eventData.type === 'task') {
+                    const marked = eventData.complete ? `${eventData.title} ✓` : eventData.title;
+                    const eventWithId = {
+                        ...eventData,
+                        title: marked,
+                        id: event.id,
+                        backgroundColor: eventColour,
+                        borderColor: eventColour,
+                    }
+                    return eventWithId;
+                }
+                else {
+                    const eventWithId = {
+                        ...eventData,
+                        id: event.id,
+                        backgroundColor: eventColour,
+                        borderColor: eventColour
+                    };
+                    return eventWithId;
+                }
           })
             setEvents(newEvents)
         }
     }, [calEvents, loading])
+
+    useEffect(() => {
+        setActivePage('calendar');
+    }, [])
       
     let modalClass = modalOpen ? 'add-event-modal' : 'add-event-modal--closed';
     let selectedEventClass = selectedEvent ? 'selected-event' : 'selected-event--closed';
@@ -66,9 +83,11 @@ const CalendarPage = ({click}) => {
         switch(event.target.id) {
             case 'title':
                 setTitleInput(event.target.value);
+                event.target.classList.remove('add-job--incomplete-field')
                 break;
             case 'start':
                 setStartInput(event.target.value);
+                event.target.classList.remove('add-job--incomplete-field')
                 break;
             case 'end':
                 setEndInput(event.target.value);
@@ -79,20 +98,33 @@ const CalendarPage = ({click}) => {
       }
 
     const submitEvent = (event) => {
-        eventsRef.add(endInput ? {
-            title: titleInput,
-            start: startInput,
-            end: endInput,
-            type: 'calendar'
-        } : 
-        {
-            title: titleInput,
-            start: startInput,
-            type: 'calendar'
-        }).then(doc => {
-            console.log('event created!')
-        })
-        openModal();
+        if (titleInput && startInput) {
+            const newEvent = {
+                title: titleInput,
+                start: startInput,
+                type: 'calendar',
+            };
+            if (endInput) newEvent.end = endInput;
+
+            eventsRef.add(newEvent)
+            .then(doc => {
+                console.log('event created!')
+            })
+            openModal();
+
+        } else {
+            const elements = event.target.parentElement.children;
+            const arr = [...elements];
+            arr.forEach(item => {
+                if (item.id === 'title' && !item.value) {
+                    item.classList.add('add-job--incomplete-field');
+                    console.log(item.classList)
+                };
+                if (item.id === 'start' && !item.value) {
+                    item.classList.add('add-job--incomplete-field');
+                }
+            })
+        }
 
       }
 
@@ -131,42 +163,38 @@ const CalendarPage = ({click}) => {
     }
 
     return (
+            
         <div className="calendar--wrapper">
-            <div className={modalClass}>
-                <p>Event Title:</p>
-                <input value={titleInput} id='title' className="add-event-modal--input" type="text" placeholder="Title" onChange={handleChange}/>
-                <p>Start Date:</p>
-                <input value={startInput} id='start' className="add-event-modal--input" type="date" onChange={handleChange} />
-                <p>End Date(optional):</p>
-                <input value={endInput} id='end' className="add-event-modal--input" type="date" onChange={handleChange}/>
-                <button onClick={submitEvent}>Submit</button>
-                <button onClick={openModal}>Cancel</button>
-            </div>
+        <div className={modalClass}>
+            <p>Event Title:</p>
+            <input value={titleInput} id='title' className="add-event-modal--input" type="text" placeholder="Title" onChange={handleChange}/>
+            <p>Start Date:</p>
+            <input value={startInput} id='start' className="add-event-modal--input" type="date" onChange={handleChange} />
+            <p>End Date(optional):</p>
+            <input value={endInput} id='end' className="add-event-modal--input" type="date" onChange={handleChange}/>
+            <button onClick={submitEvent}>Submit</button>
+            <button onClick={openModal}>Cancel</button>
+        </div>
             {selectedEvent ? <div className={selectedEventClass}>
-                <div className="selected-event--header">
-                    <span className="selected-event--date">
-                        <p>Start Date:</p>
-                        <p>{selectedEvent.start} </p>
-                    </span>
-                    {selectedEvent.end ? <span>
-                        <p>End Date:</p>
-                        <p>{selectedEvent.end} </p>
-                    </span> : null}
-                    
-                </div>
-                <div className="selected-event--main">
-                    <p>{selectedEvent.title} </p>
-                    <div className="selected-event--btns">
-                        <button onClick={closeEventModal} >Close</button>
-                        {selectedEvent.type === 'calendar' ? <button onClick={deleteEvent}>Delete</button> : null}
+                    <div className="selected-event--header">
+                        <span className="selected-event--date">
+                            <p>Start Date:</p>
+                            <p>{selectedEvent.start} </p>
+                        </span>
+                        {selectedEvent.end ? <span>
+                            <p>End Date:</p>
+                            <p>{selectedEvent.end} </p>
+                        </span> : null}
+                        
                     </div>
-                </div>
-            </div> : null}
-            <div className="page-header">
-                <Greeting />
-                <NavBtns activePage={'calendar'} click={click} />
-            </div>
-            <div className="page-body">
+                    <div className="selected-event--main">
+                        <p>{selectedEvent.title} </p>
+                        <div className="selected-event--btns">
+                            <button onClick={closeEventModal} >Close</button>
+                            {selectedEvent.type === 'calendar' ? <button onClick={deleteEvent}>Delete</button> : null}
+                        </div>
+                    </div>
+                </div> : null}
             <div className="calendar--list">
                     <FullCalendar 
                         plugins={[ listPlugin ]}
@@ -177,7 +205,7 @@ const CalendarPage = ({click}) => {
                 </div>
                 <div className="calendar">
                     <div className="calendar-btn-box">
-                        <button onClick={openModal}>Add Calendar Event</button>
+                        <button className="job-page--btns--button" onClick={openModal}>Add Event</button>
 
                     </div>
                     <FullCalendar
@@ -188,8 +216,8 @@ const CalendarPage = ({click}) => {
                         eventClick={(info) => {openEventModal(info)}}
                     />
                 </div>
-            </div>
         </div>
+        
     )
 }
 

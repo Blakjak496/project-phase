@@ -14,13 +14,16 @@ const JobPage = (props) => {
     const [tasks, setTasks] = useState([]);
     const [jobInfo, setJobInfo] = useState({});
     const [eventIds, setEventIds] = useState([]);
-    const { currentUser, accountsRef } = useContext(UserContext);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [jobTracked, setJobTracked] = useState(false);
+    const { currentUser, accountsRef, activePage, setActivePage } = useContext(UserContext);
     const jobRef = accountsRef.collection('jobs').doc(props.job_id);
     const tasksRef = jobRef.collection('tasks');
+    const query = tasksRef.orderBy('numDeadline');
 
     
     
-    const [tasksList, loading, error] = useCollection(tasksRef);
+    const [tasksList, loading, error] = useCollection(query);
 
     useEffect(() => {
         if (!loading) {
@@ -31,8 +34,15 @@ const JobPage = (props) => {
             });
             setTasks(newTasks);
         }
-        jobRef.get().then((res) => {setJobInfo(res.data())})
+        jobRef.get().then((res) => {
+            setJobInfo(res.data());
+            setJobTracked(res.data().tracked);
+        })
     }, [tasksList, loading])
+
+    useEffect(() => {
+        setActivePage('job');
+    }, [])
    
     const trackJob = () => {
         jobRef.update({tracked: !jobInfo.tracked})
@@ -42,14 +52,21 @@ const JobPage = (props) => {
         .catch((err) => {
             console.log('tracking error')
         })
+        setJobTracked(!jobTracked);
+    }
+
+    const openDelete = () => {
+        setConfirmDelete(!confirmDelete);
     }
 
     const deleteJob = () => {
         const eventsRef = accountsRef.collection('events');
         const query = eventsRef.where('jobId', '==', props.job_id);
+        const eventIds = [];
         
         query.get().then((res) => {
             res.docs.forEach((doc) => {
+                eventIds.push(doc.id);
                 eventsRef.doc(doc.id).delete();
             })
             tasksList.forEach(task => {
@@ -57,31 +74,65 @@ const JobPage = (props) => {
             })
             jobRef.delete();
         })
+        eventIds.forEach(id => {
+            const taskEventsQuery = eventsRef.where('jobId', '==', id);
+            taskEventsQuery.get().then((res) => {
+                res.docs.forEach((doc) => {
+                    eventsRef.doc(doc.id).delete();
+                })
+            })
+            
+        })
     }
-    
-        
-    
-
-
+    console.log(jobTracked);
     return (
         <div className="job-page--wrapper">
-            <div className="page-header">
-                <Greeting />
-                <NavBtns activePage={'job'} click={props.click} />
-            </div>
-            <div className="page-body">
-                <div className="job-page--info">
-                    <h3 className="job-page--info-title">Job Title: {jobInfo.title} </h3>
-                    <h3 className="job-page--info-client">Client: {jobInfo.clientName} </h3>
-                    <h3 className="job-page--info-deadline">Deadline: {jobInfo.deadline} </h3>
-                    <p className="job-page--info-overview">Overview: <br/> {jobInfo.overview} </p>
-                    <div className="job-page--btns">
-                        <button onClick={trackJob}>{jobInfo.tracked ? 'Remove from Dashboard' : 'Add to Dashboard'}</button>
-                        <Link onClick={deleteJob} to="/jobs" >Delete Job</Link>
+            <div className="job-page--info">
+                <div className="job-page--info--primary">
+                    <div className="job-page--info--single">
+                        <h3 className="job-page--info-title">Job Title: </h3>
+                        <h4 className="job-page--info-text">{jobInfo.title}</h4>
+                    </div>
+                    <div className="job-page--info--single">
+                        <h3 className="job-page--info-title">Deadline: </h3>
+                        <h4 className="job-page--info-text">{jobInfo.deadline}</h4>
                     </div>
                 </div>
-                <JobsList jobs={tasks} jobId={props.job_id} activePage="job" />
+                {jobInfo.clientName ? 
+                    <div className="job-page--info--optional">
+                        <div className="job-page--info--single">
+                            <h3 className="job-page--info-title">Client: </h3>
+                            <h4 className="job-page--info-text">{jobInfo.clientName}</h4>
+                        </div>
+                    </div>
+                : null}
+                <div className="job-page--info--primary">
+                    <div className="job-page--info--single">
+                        <h4 className="job-page--info-title">Overview: </h4>
+                        <p className="job-page--info-text">{jobInfo.overview}</p>
+                    </div>
+                </div>
+                    {confirmDelete ? 
+                    <div className="job-page--delete-confirm">
+                        <p className="job-page--delete-confirm--text-bold">Are you sure? </p> 
+                        <p className="job-page--delete-confirm--text-normal"> This will permanently delete this job and ALL corresponding tasks and calendar events.</p>
+                        <div className="job-page--btns">
+                            <button className="job-page--btns--button">
+                                <Link className="job-page--btns--button-link" onClick={deleteJob} to="/jobs" >Delete</Link>
+                            </button>
+                            <button className="job-page--btns--button" onClick={openDelete}>Cancel</button>
+                        </div>
+                    </div> 
+                    :
+                    <div className="job-page--btns">
+                        <button className="job-page--btns--button" onClick={trackJob}>{jobTracked ? 'Untrack' : 'Track'}</button>
+                        <button className="job-page--btns--button" onClick={openDelete}>Delete</button>
+                    </div>}
+
             </div>
+            <h3 className="job-page--tasks-header">Tasks</h3>
+            <JobsList jobs={tasks} jobId={props.job_id} activePage={activePage} />
+            
         </div>
     )
 

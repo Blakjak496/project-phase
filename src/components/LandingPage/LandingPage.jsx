@@ -21,13 +21,13 @@ const LandingPage = ({click}) => {
                     </p>
                     <img className="landing-page--screenshot" src={image} alt="screenshot of app feature"/>
                 </div>
-                <div className="landing-page--description-wrapper">
+                {/* <div className="landing-page--description-wrapper">
                     <p className="landing-page--description-text">
                         Keep up-to-date on the latest news from your favourite outlets using the RSS reader on your
                         personal Dashboard.
                     </p>
                     <img className="landing-page--screenshot" src={image} alt="screenshot of app feature"/>
-                </div>
+                </div> */}
             </div>
         </div>
     )
