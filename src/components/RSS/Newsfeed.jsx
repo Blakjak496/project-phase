@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '../UserContext';
-import { parseFeed } from './parser';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,6 +8,21 @@ import { formatDate } from '../../utils/utils';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+
+const Parser = require('rss-parser');
+
+let parser = new Parser();
+
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
+
+const parseFeed = async (url) => {
+    let feed = await parser.parseURL(CORS_PROXY + url)
+    return {
+        title: feed.title,
+        link: feed.link,
+        items: feed.items
+    }
+}
 
 
 const RSSReader = () => {
@@ -88,17 +102,8 @@ const RSSReader = () => {
         setFeedInput(event.target.value);
     }
 
-    
-    const feedTitles = parsedFeeds.map(feed => {
-        return feed.title;
-    })
-
     const handleTabClick = (event) => {
         setCurrentTab(event.currentTarget.id);
-    }
-    
-    const makeArticleCards = () => {
-        
     }
 
     
