@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand&display=swap");
+
 html {
   /* var(--dark-background)s and Whites */
   --light-background: #f0f3df;
@@ -22,13 +24,34 @@ html {
   --primary-plus1: #1a8718;
   --primary-plus2: #177715;
   --primary-accent: #a63c53;
+
+  font-family: "Quicksand", sans-serif;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--dark-background);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--primary-plus2);
+}
+
+.router {
+  display: flex;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
 }
 
 .App {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: 100vw;
+  width: 100%;
   height: auto;
   min-width: 280px;
   min-height: 100vh;
@@ -36,6 +59,8 @@ html {
   text-align: center;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  font-family: Quicksand;
 }
 
 .page-header {
@@ -49,20 +74,13 @@ html {
   background: var(--main-color);
 }
 
-.router {
-  width: 100%;
-  height: 100%;
-  min-width: 20px;
-  min-height: 80vh;
-}
-
 .page-body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 80%;
+  height: auto;
   min-width: 280px;
-  min-height: 80%;
+  min-height: 80vh;
   align-items: center;
   justify-content: center;
   padding: 1rem 0;
@@ -78,16 +96,28 @@ html {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background: var(--primary-plus2);
-  color: var(--dark-background);
+  background: var(--dark-background);
+  color: var(--light-background);
+  align-items: center;
+}
+
+.landing-page--wrapper h2 {
+  display: flex;
+  color: var(--primary);
+  width: 100%;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .landing-page--section {
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
+  width: 75%;
   height: 50%;
   min-width: 280px;
+  max-width: 1000px;
   justify-content: center;
   align-items: center;
   padding: 1rem;
@@ -108,6 +138,7 @@ html {
   display: flex;
   width: 100%;
   height: 2rem;
+  max-width: 200px;
   justify-content: center;
   align-items: center;
   padding: 4px 12px;
@@ -123,6 +154,7 @@ html {
   display: flex;
   width: 100%;
   min-width: 280px;
+  max-width: 400px;
 }
 
 .dashboard--wrapper {
@@ -132,8 +164,8 @@ html {
   width: 100vw;
   height: auto;
   min-width: 280px;
-  min-height: 100%;
-  justify-content: space-evenly;
+  min-height: 80vh;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -173,12 +205,14 @@ html {
 
 .dashboard--nav {
   display: flex;
+  position: sticky;
   flex-wrap: wrap;
   box-sizing: border-box;
   width: 100%;
   min-width: 280px;
+  height: 3rem;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   top: 0;
   background: rgba(0, 0, 0, 0.7);
 }
@@ -195,65 +229,25 @@ html {
   color: var(--light-background);
 }
 
-.bm-burger-button {
+.burger-button {
   display: flex;
   box-sizing: border-box;
-  position: relative;
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
 }
 
-.bm-burger-bars {
-  background: var(--primary);
+.MuiList-root {
+  background: var(--dark-background);
 }
 
-/* Color/shape of burger icon bars on hover*/
-.bm-burger-bars-hover {
-  background: var(--primary-minus2);
-}
-
-/* Position and sizing of clickable cross button */
-.bm-cross-button {
-  height: 24px;
-  width: 24px;
-}
-
-/* Color/shape of close button cross */
-.bm-cross {
-  background: var(--primary);
-}
-
-/*
-Sidebar wrapper styles
-Note: Beware of modifying this element as it can break the animations - you should not need to touch it in most cases
-*/
-.bm-menu-wrap {
-  position: fixed;
-  height: 100%;
-}
-
-/* General sidebar styles */
-.bm-menu {
-  background: #000;
-  padding: 2.5em 1.5em 0;
-  font-size: 1.15em;
-}
-
-/* Morph shape necessary with bubble or elastic */
-.bm-morph-shape {
-  fill: #000;
-}
-
-/* Wrapper for item list */
-.bm-item-list {
-  color: #b8b7ad;
-  padding: 4px 12px;
-}
-
-/* Individual item */
 .bm-item {
-  display: inline-block;
+  display: flex;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
   padding: 4px 12px;
   color: var(--primary-minus2);
@@ -261,18 +255,17 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 
 .bm-item--active {
-  display: inline-block;
+  display: flex;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
   padding: 4px 12px;
   color: var(--light-background);
   background: var(--primary);
   margin-bottom: 12px;
-}
-
-/* Styling of overlay */
-.bm-overlay {
-  background: rgba(0, 0, 0, 0.3);
 }
 
 .dashboard--tracker-title {
@@ -303,7 +296,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: 100vw;
+  width: 100%;
   height: auto;
   min-width: 280px;
   min-height: 80vh;
@@ -536,10 +529,6 @@ Note: Beware of modifying this element as it can break the animations - you shou
   margin-bottom: 12px;
 }
 
-.add-job--incomplete-field {
-  border: 2px solid var(--warning);
-}
-
 .add-job--btn {
   display: flex;
   box-sizing: border-box;
@@ -702,8 +691,10 @@ Note: Beware of modifying this element as it can break the animations - you shou
   width: 100%;
   height: auto;
   min-width: 280px;
+  max-width: 1000px;
   align-items: center;
   justify-content: space-evenly;
+  margin: 4px 12px 1rem 12px;
   padding: 4px 12px 1rem 12px;
   color: var(--primary);
   background: var(--dark-low-contrast-neutral);
@@ -714,6 +705,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
   box-sizing: border-box;
   width: 75%;
   min-width: 280px;
+  max-width: 1000px;
   align-items: center;
   justify-content: center;
   padding: 4px 12px;
@@ -766,16 +758,6 @@ Note: Beware of modifying this element as it can break the animations - you shou
   display: none;
 }
 
-.add-event-modal button {
-  display: flex;
-  height: 2rem;
-  font-size: 1.5rem;
-  padding: 4px 12px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
 .add-event-modal p {
   display: flex;
   box-sizing: border-box;
@@ -785,6 +767,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
 .add-event-modal--input {
   display: flex;
+  box-sizing: border-box;
   width: 25%;
   min-width: 280px;
   height: 2rem;
@@ -792,6 +775,8 @@ Note: Beware of modifying this element as it can break the animations - you shou
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
+  background: var(--light-background);
+  border: none;
 }
 
 .selected-event {
@@ -806,7 +791,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
   background: rgba(0, 0, 0, 0.7);
   align-items: center;
   justify-content: center;
-  color: beige;
+  color: var(--light-background);
 }
 
 .selected-event--closed {
@@ -817,24 +802,41 @@ Note: Beware of modifying this element as it can break the animations - you shou
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: 75%;
-  height: auto;
+  width: 100%;
+  height: 20%;
   min-width: 280px;
-  background: blueviolet;
+  background: var(--primary);
   padding: 4px 12px;
+  align-items: center;
+  justify-content: center;
 }
 
 .selected-event--main {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: 75%;
-  height: auto;
+  width: 100%;
+  height: 80%;
   min-width: 280px;
-  background: blueviolet;
+  background: var(--dark-low-contrast-neutral);
   padding: 4px 12px;
   align-items: center;
   justify-content: space-between;
+}
+
+.selected-event--date {
+  font-size: 1.3rem;
+}
+
+.selected-event--detail {
+  font-size: 1.3rem;
+}
+
+.selected-event--item-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
 }
 
 .selected-event--main button {
@@ -858,6 +860,140 @@ Note: Beware of modifying this element as it can break the animations - you shou
   margin-top: 1rem;
 }
 
+.fc {
+  z-index: 0;
+}
+
+.fc-daygrid-event-harness:hover {
+  cursor: pointer;
+}
+
+.Modal {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  width: 100%;
+  min-width: 280px;
+  z-index: 100;
+  background: var(--dark-background);
+  color: var(--light-background);
+  align-items: center;
+  justify-content: center;
+}
+
+.Modal button {
+  display: flex;
+  box-sizing: border-box;
+  width: 10rem;
+  height: 2rem;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 12px;
+  background: var(--primary);
+  border: none;
+  border-radius: 15px;
+  text-decoration: none;
+  color: var(--dark-background);
+  padding: 4px 12px;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.add-job--incomplete-field {
+  border: 2px solid var(--warning);
+}
+
+.rss-reader {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 280px;
+  max-width: 1000px;
+  height: auto;
+  min-height: 400px;
+  margin-top: 1rem;
+  background: var(--dark-low-contrast-neutral);
+}
+
+.rss-reader--header {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.rss-reader--articles {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 280px;
+  height: auto;
+  justify-content: space-evenly;
+}
+
+.rss-card {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+  min-width: 280px;
+  height: auto;
+  max-height: 280px;
+  margin: 1rem;
+  background: var(--dark-background);
+}
+
+.rss-card--content {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  background: var(--dark-background);
+  overflow-y: auto;
+  min-height: 100%;
+}
+
+.rss-card--title {
+  display: flex;
+  box-sizing: border-box;
+  color: var(--primary);
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.rss-card--snippet {
+  display: flex;
+  box-sizing: border-box;
+  color: var(--light-background);
+  align-items: center;
+  justify-content: center;
+}
+
+.rss-card--date {
+  display: flex;
+  box-sizing: border-box;
+  color: var(--light-background);
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
 @media screen and (min-width: 1000px) {
   .landing-page--description-wrapper {
     display: flex;
@@ -877,6 +1013,10 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
   .landing-page--screenshot {
     width: 40%;
+  }
+
+  .dashboard--nav {
+    justify-content: center;
   }
 
   .nav-btn {
@@ -902,11 +1042,19 @@ Note: Beware of modifying this element as it can break the animations - you shou
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    color: var(--light-background);
+    color: var(--dark-background);
     background: var(--primary);
   }
 
-  .bm-burger-button {
+  .MuiButton-root {
+    display: none;
+  }
+
+  .burger-button {
+    display: none;
+  }
+
+  .burger-icon {
     display: none;
   }
 }

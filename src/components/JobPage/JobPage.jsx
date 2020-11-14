@@ -1,22 +1,18 @@
 import { useContext, useEffect, useState } from "react"
-import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { useDocument, useDocumentData, useCollection } from 'react-firebase-hooks/firestore';
+import {  useCollection } from 'react-firebase-hooks/firestore';
 import { Link } from '@reach/router';
 
-import Greeting from '../greeting';
-import NavBtns from '../Nav/NavBtns';
 import UserContext from "../UserContext";
 import JobsList from '../JobsPage/JobsList';
 
 const JobPage = (props) => {
     const [tasks, setTasks] = useState([]);
     const [jobInfo, setJobInfo] = useState({});
-    const [eventIds, setEventIds] = useState([]);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [jobTracked, setJobTracked] = useState(false);
-    const { currentUser, accountsRef, activePage, setActivePage } = useContext(UserContext);
+    const { accountsRef, activePage, setActivePage } = useContext(UserContext);
     const jobRef = accountsRef.collection('jobs').doc(props.job_id);
     const tasksRef = jobRef.collection('tasks');
     const query = tasksRef.orderBy('numDeadline');
@@ -70,7 +66,7 @@ const JobPage = (props) => {
                 eventsRef.doc(doc.id).delete();
             })
             tasksList.forEach(task => {
-                tasksRef.doc(task.id).delete();            
+                tasksRef.doc(task.id).delete();
             })
             jobRef.delete();
         })
@@ -84,7 +80,7 @@ const JobPage = (props) => {
             
         })
     }
-    console.log(jobTracked);
+
     return (
         <div className="job-page--wrapper">
             <div className="job-page--info">

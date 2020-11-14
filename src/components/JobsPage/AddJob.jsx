@@ -11,9 +11,7 @@ const AddJob = (props) => {
     const [clientInput, setClientInput] = useState('');
     const [deadlineInput, setDeadlineInput] = useState('');
     const [overviewInput, setOverviewInput] = useState('');
-    const [newEventId, setNewEventId] = useState(1);
-    const [newJobId, setNewJobId] = useState('');
-    const {currentUser, accountsRef} = useContext(UserContext);
+    const { accountsRef } = useContext(UserContext);
 
     const handleChange = (event) => {
         switch(event.target.id) {
@@ -113,6 +111,7 @@ const AddJob = (props) => {
             <p>Job Overview:</p>
             <input id="overview" className="add-job--input" type="text" placeholder="Job Overview" onChange={handleChange}/>
             <button className="add-job--btn" onClick={submitJob}>Submit</button>
+            <button className="add-job--btn" onClick={props.openForm}>Close</button>
         </div>
     )
 }
