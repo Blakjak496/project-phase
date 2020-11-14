@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { formatDate, setGreeting } from "../../utils/utils";
-import Greeting from '../greeting';
+import { CSSTransition } from 'react-transition-group';
 import JobsList from "../JobsPage/JobsList";
-import NavBtns from '../Nav/NavBtns';
 import UserContext from "../UserContext";
+import RSSReader from '../RSS/Newsfeed';
 
 const Dashboard = () => {
     const [jobs, setJobs] = useState([]);
+    const [finishedLoading, setFinishedLoading] = useState(true);
     const { accountsRef, activePage, setActivePage } = useContext(UserContext);
 
     const jobsRef = accountsRef.collection('jobs');
@@ -23,6 +23,7 @@ const Dashboard = () => {
                 return jobWithId;
             })
             setJobs(newJobs);
+            setFinishedLoading(false)
         }
     }, [trackedJobs, loading])
 
@@ -33,12 +34,12 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard--wrapper">
-            <h3 className="dashboard--tracker-title">Tracked Jobs</h3>
-            <JobsList jobs={jobs} activePage={activePage} />
-            <div className="dashboard--newsfeed">
-                newsfeed
-            </div> 
-        </div>
+                <h3 className="dashboard--tracker-title">Tracked Jobs</h3>
+                {/* <CSSTransition in={finishedLoading} timeout={1000} classNames="fade" mountOnEnter unmountOnExit> */}
+                    <JobsList jobs={jobs} activePage={activePage} />
+                {/* </CSSTransition> */}
+                <RSSReader /> 
+            </div>
     )
 }
 

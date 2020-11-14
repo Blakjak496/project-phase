@@ -1,18 +1,17 @@
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
+import Modal from 'react-modal';
 
-import Greeting from '../greeting';
-import NavBtns from '../Nav/NavBtns';
 import { useContext, useEffect, useState } from 'react';
-import { Link } from '@reach/router';
 import UserContext from '../UserContext';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { formatDate, formatDeadline } from '../../utils/utils';
+import { formatDate } from '../../utils/utils';
 
-const CalendarPage = ({click}) => {
+const CalendarPage = () => {
     const [events, setEvents] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const [eventOpen, setEventOpen] = useState(false);
     const [titleInput, setTitleInput] = useState('');
     const [startInput, setStartInput] = useState('');
     const [endInput, setEndInput] = useState('');
@@ -20,7 +19,7 @@ const CalendarPage = ({click}) => {
     const { accountsRef, setActivePage } = useContext(UserContext);
 
     const eventsRef = accountsRef.collection('events');
-    const[calEvents, loading, error] = useCollection(eventsRef);
+    const[calEvents, loading] = useCollection(eventsRef);
 
     useEffect(() => {
         if (!loading) {
@@ -68,8 +67,12 @@ const CalendarPage = ({click}) => {
     useEffect(() => {
         setActivePage('calendar');
     }, [])
+
+    useEffect(() => {
+        if (selectedEvent) setEventOpen(true);
+        else setEventOpen(false);
+    }, [selectedEvent])
       
-    let modalClass = modalOpen ? 'add-event-modal' : 'add-event-modal--closed';
     let selectedEventClass = selectedEvent ? 'selected-event' : 'selected-event--closed';
 
     const openModal = () => {
@@ -115,6 +118,7 @@ const CalendarPage = ({click}) => {
         } else {
             const elements = event.target.parentElement.children;
             const arr = [...elements];
+            console.log(arr)
             arr.forEach(item => {
                 if (item.id === 'title' && !item.value) {
                     item.classList.add('add-job--incomplete-field');
@@ -165,36 +169,44 @@ const CalendarPage = ({click}) => {
     return (
             
         <div className="calendar--wrapper">
-        <div className={modalClass}>
-            <p>Event Title:</p>
-            <input value={titleInput} id='title' className="add-event-modal--input" type="text" placeholder="Title" onChange={handleChange}/>
-            <p>Start Date:</p>
-            <input value={startInput} id='start' className="add-event-modal--input" type="date" onChange={handleChange} />
-            <p>End Date(optional):</p>
-            <input value={endInput} id='end' className="add-event-modal--input" type="date" onChange={handleChange}/>
-            <button onClick={submitEvent}>Submit</button>
-            <button onClick={openModal}>Cancel</button>
-        </div>
+        <Modal isOpen={modalOpen} className="Modal" overlayClassName="Overlay">
+            
+                <p>Event Title:</p>
+                <input value={titleInput} id='title' className="add-event-modal--input" type="text" placeholder="Title" onChange={handleChange}/>
+                <p>Start Date:</p>
+                <input value={startInput} id='start' className="add-event-modal--input" type="date" onChange={handleChange} />
+                <p>End Date(optional):</p>
+                <input value={endInput} id='end' className="add-event-modal--input" type="date" onChange={handleChange}/>
+                <button onClick={submitEvent}>Submit</button>
+                <button onClick={openModal}>Cancel</button>
+            
+        </Modal>
+        <Modal isOpen={eventOpen} className="Modal" overlayClassName="Overlay">
             {selectedEvent ? <div className={selectedEventClass}>
-                    <div className="selected-event--header">
-                        <span className="selected-event--date">
-                            <p>Start Date:</p>
-                            <p>{selectedEvent.start} </p>
-                        </span>
-                        {selectedEvent.end ? <span>
-                            <p>End Date:</p>
-                            <p>{selectedEvent.end} </p>
-                        </span> : null}
-                        
+                <div className="selected-event--header">
+                    <span className="selected-event--date">
+                        <p className="selected-event--item-title">Start Date:</p>
+                        <p>{selectedEvent.start} </p>
+                    </span>
+                    {selectedEvent.end ?
+                     <span className="selected-event--date">
+                        <p className="selected-event--item-title">End Date:</p>
+                        <p>{selectedEvent.end} </p>
+                    </span>
+                     : null}   
+                </div>
+                <div className="selected-event--main">
+                    <p className="selected-event--detail">{selectedEvent.title} </p>
+                    <div className="selected-event--btns">
+                        <button onClick={closeEventModal} >Close</button>
+                        {selectedEvent.type === 'calendar' ? 
+                        <button onClick={deleteEvent}>Delete</button>
+                         : null}
                     </div>
-                    <div className="selected-event--main">
-                        <p>{selectedEvent.title} </p>
-                        <div className="selected-event--btns">
-                            <button onClick={closeEventModal} >Close</button>
-                            {selectedEvent.type === 'calendar' ? <button onClick={deleteEvent}>Delete</button> : null}
-                        </div>
-                    </div>
-                </div> : null}
+                </div>
+            </div> : null}
+        </Modal>
+            
             <div className="calendar--list">
                     <FullCalendar 
                         plugins={[ listPlugin ]}

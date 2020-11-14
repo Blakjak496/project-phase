@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import UserContext from "../UserContext";
 import { formatDeadline, formatEventDate } from '../../utils/utils';
-import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 const AddTask = (props) => {
@@ -96,6 +95,7 @@ const AddTask = (props) => {
             <p>Deadline Date:</p>
             <input id="deadline" className="add-job--input" type="date" onChange={handleChange} />
             <button className="add-job--btn" onClick={submitTask} >Submit</button>
+            <button className="add-job--btn" onClick={props.openForm} >Close</button>
         </div>
     )
 }

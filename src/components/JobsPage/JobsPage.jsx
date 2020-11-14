@@ -1,11 +1,8 @@
 import { useContext, useEffect, useState } from "react"
-import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
-import Greeting from '../greeting';
-import NavBtns from '../Nav/NavBtns';
 import UserContext from "../UserContext";
 import JobsList from './JobsList';
 

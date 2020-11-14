@@ -25,18 +25,37 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [exists, setExists] = useState(true);
   const [activePage, setActivePage] = useState('dash');
+  const [rememberMe, setRememberMe] = useState(false);
   const firestore = firebase.firestore();
-
+  
   let accountsRef;
   if (currentUser) {
     accountsRef = firestore.collection('accounts').doc(currentUser.uid);
-   
-    
+     
   }
+
+  useEffect(() => {
+    if (localStorage.getItem('currentUser')) {
+      const userStr = localStorage.getItem('currentUser');
+      const userObj = JSON.parse(userStr);
+      setCurrentUser(userObj);
+    } else {
+        console.log('no user in localStorage')
+        if (sessionStorage.getItem('currentUser')) {
+          const userStr = sessionStorage.getItem('currentUser');
+          const userObj = JSON.parse(userStr);
+          setCurrentUser(userObj)
+        } else {
+          console.log('no user in session storage');
+        }
+      }
+  }, [])
+
   
   
   useEffect(() => {
     if (currentUser) {
+
       const doc = accountsRef.collection('jobs').doc('1');
       
       doc.get().then((res) => { setExists(res.exists) });
@@ -68,6 +87,13 @@ function App() {
             }, {merge: true})
             .then((res) => {
               console.log('events collection created');
+              const feedsRef = accountsRef.collection('feeds');
+              feedsRef.add({
+                url: 'https://www.reddit.com/.rss'
+              })
+              .then((res) => {
+                console.log('feeds collection created');
+              })
             })
           })
         })
@@ -76,8 +102,8 @@ function App() {
         })
 
       }
-      
     }
+
 
   }, [currentUser, exists, accountsRef])
 
@@ -87,12 +113,15 @@ function App() {
   
   const signIn = (user) => {
     setCurrentUser(user);
+    
   }
 
   const signOut = () => {
     firebase.auth().signOut()
     .then(() => {
       setCurrentUser(null);
+      localStorage.removeItem('currentUser');
+      sessionStorage.clear();
       setActivePage('dash');
       console.log('signed out')
     })
@@ -100,8 +129,7 @@ function App() {
       console.log('sign-out error')
     })
   }
-
-  console.log(activePage)  
+  
   return (
     <UserProvider value={{currentUser, accountsRef, activePage, setActivePage}}>
       <div id={"app"} className="App">
@@ -114,15 +142,15 @@ function App() {
           
         </div>
         <div id={"page-body"} className="page-body">
-          <Router className="router" primary={false}>
-            <Dashboard path="/" />
-            <JobsPage path="/jobs" />
-            <JobPage path="/jobs/:job_id" />
-            <CalendarPage path="/calendar" />
-          </Router>
+            <Router className="router" primary={false}>
+              <Dashboard path="/" />
+              <JobsPage path="/jobs" />
+              <JobPage path="/jobs/:job_id" />
+              <CalendarPage path="/calendar" />
+            </Router>
         </div> 
         </>
-        : <LandingPage click={signIn} path="/" />}
+        : <LandingPage click={signIn} remember={setRememberMe} rememberState={rememberMe} path="/" />}
       </div>
 
     </UserProvider>
