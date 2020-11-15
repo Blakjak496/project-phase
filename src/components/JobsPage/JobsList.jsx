@@ -1,19 +1,27 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import JobCard from './JobCard';
 import AddJob from './AddJob';
 import AddTask from '../JobPage/AddTask';
 import UserContext from '../UserContext';
 import Modal from 'react-modal';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 
 const JobsList = ({ jobs, jobId }) => {
     const [formOpen, setFormOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const {activePage} = useContext(UserContext);
 
     const openForm = () => {
         setFormOpen(!formOpen)
     }
 
+    useEffect(() => {
+        if (jobs.length) setIsLoading(false);
+    }, [jobs])
+    
     let cardType;
     switch(activePage) {
         case 'jobs':
@@ -34,13 +42,28 @@ const JobsList = ({ jobs, jobId }) => {
         else if (activePage === 'job') return false;
     }
 
+    const theme = createMuiTheme({
+        palette: {
+            primary: {
+                main: '#1d9b1a',
+            },
+            secondary: {
+                main: '#f0f3df',
+            }
+        }
+    })
+
     return (
         <div className="jobs-page--jobs-list">
             <div className="jobs-page--jobs-list-header">
                 {activePage === 'dash' ? null : <button className="add-job--btn" onClick={openForm}>Add</button>}
             </div>
             <div className="jobs-page--jobs-list-main">
-            <ul >
+            {isLoading ?
+                <ThemeProvider theme={theme}>
+                    <CircularProgress color={"primary"}/>
+                </ThemeProvider> 
+            : <ul >
                 {jobs.length ? jobs.map((job) => {
                     if (!job.placeholder) {
                         return (
@@ -49,7 +72,7 @@ const JobsList = ({ jobs, jobId }) => {
                     }
                 })
                 : <p className="jobs-list--no-jobs">Nothing to display</p> }    
-            </ul>   
+            </ul>}   
             <Modal isOpen={formOpen} className="Modal" overlayClassName="Overlay">
                 {JobOrTask() ? 
                     <AddJob openForm={openForm} newJob={jobs.length+1} />  
