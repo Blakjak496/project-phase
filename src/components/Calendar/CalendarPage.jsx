@@ -25,42 +25,53 @@ const CalendarPage = () => {
         if (!loading) {
             const newEvents = calEvents.docs.map(event => {
                 const eventData = event.data();
-                let eventColour;
-                switch(eventData.type) {
-                    case 'job':
-                        eventColour = 'red';
-                        break;
-                    case 'task':
-                        eventColour = 'blue';
-                        break;
-                    case 'calendar':
-                        eventColour = 'purple';
-                        break;
-                    default:
-                        break;
-                }
-                if (eventData.type === 'task') {
-                    const marked = eventData.complete ? `${eventData.title} ✓` : eventData.title;
-                    const eventWithId = {
-                        ...eventData,
-                        title: marked,
-                        id: event.id,
-                        backgroundColor: eventColour,
-                        borderColor: eventColour,
+                if (!eventData.placeholder) {
+                    let eventColour;
+                    switch(eventData.type) {
+                        case 'job':
+                            eventColour = 'red';
+                            break;
+                        case 'task':
+                            eventColour = 'blue';
+                            break;
+                        case 'calendar':
+                            eventColour = 'purple';
+                            break;
+                        default:
+                            break;
                     }
-                    return eventWithId;
-                }
-                else {
-                    const eventWithId = {
-                        ...eventData,
-                        id: event.id,
-                        backgroundColor: eventColour,
-                        borderColor: eventColour
-                    };
-                    return eventWithId;
+                    if (eventData.type === 'task') {
+                        const marked = eventData.complete ? `${eventData.title} ✓` : eventData.title;
+                        const eventWithId = {
+                            ...eventData,
+                            title: marked,
+                            id: event.id,
+                            backgroundColor: eventColour,
+                            borderColor: eventColour,
+                        }
+                        return eventWithId;
+                    }
+                    else {
+                        const eventWithId = {
+                            ...eventData,
+                            id: event.id,
+                            backgroundColor: eventColour,
+                            borderColor: eventColour
+                        };
+                        return eventWithId;
+                    }
+
+                } else {
+                    return eventData;
                 }
           })
-            setEvents(newEvents)
+            const newEventsMinusPlaceholder = [];
+            newEvents.forEach(event => {
+                if (!event.placeholder) {
+                    newEventsMinusPlaceholder.push(event)
+                }
+            })
+            setEvents(newEventsMinusPlaceholder);
         }
     }, [calEvents, loading])
 

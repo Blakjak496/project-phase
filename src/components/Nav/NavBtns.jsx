@@ -67,7 +67,7 @@ const NavBtns = ({click}) => {
                                 <Link id="calendar" className={activePage === 'calendar' ? 'bm-item--active' : "bm-item"} to="/calendar" >Calendar</Link>
                             </ListItem>
                             <ListItem button>
-                                <Link className={activePage === 'calendar' ? 'bm-item--active' : "bm-item"}  onClick={click} to="/">Logout</Link>
+                                <Link className="bm-item"  onClick={click} to="/">Logout</Link>
                             </ListItem>
                         </List>
                     </Drawer>

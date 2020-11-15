@@ -82,8 +82,7 @@ function App() {
             console.log('sub-collection created');
             const eventsRef = accountsRef.collection('events').doc('1');
             eventsRef.set({
-              title: 'event title',
-              start: '2020-11-10',
+              placeholder: true,
             }, {merge: true})
             .then((res) => {
               console.log('events collection created');

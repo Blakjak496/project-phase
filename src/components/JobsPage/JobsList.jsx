@@ -36,27 +36,29 @@ const JobsList = ({ jobs, jobId }) => {
 
     return (
         <div className="jobs-page--jobs-list">
-            {activePage === 'dash' ? null : <div className="jobs-page--jobs-list-header">
-                <button className="add-job--btn" onClick={openForm}>Add</button>
-            </div>}
+            <div className="jobs-page--jobs-list-header">
+                {activePage === 'dash' ? null : <button className="add-job--btn" onClick={openForm}>Add</button>}
+            </div>
             <div className="jobs-page--jobs-list-main">
+            <ul >
+                {jobs.length ? jobs.map((job) => {
+                    if (!job.placeholder) {
+                        return (
+                            <JobCard job={job} key={job.id} cardType={cardType} />
+                            )
+                    }
+                })
+                : <p className="jobs-list--no-jobs">Nothing to display</p> }    
+            </ul>   
             <Modal isOpen={formOpen} className="Modal" overlayClassName="Overlay">
                 {JobOrTask() ? 
                     <AddJob openForm={openForm} newJob={jobs.length+1} />  
                     : <AddTask openForm={openForm} newJob={jobs.length+1} jobId={jobId} />} 
 
             </Modal>
-                <ul>
-                    {jobs.length ? jobs.map((job) => {
-                        if (!job.placeholder) {
-                            return (
-                                <JobCard job={job} key={job.id} cardType={cardType} />
-                                )
-                        }
-                    })
-                : <p className="jobs-list--no-jobs">Nothing to display</p> }    
-                </ul>
+
             </div>
+            
         </div>
         )
 }
