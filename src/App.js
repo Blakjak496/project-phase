@@ -88,7 +88,7 @@ function App() {
               console.log('events collection created');
               const feedsRef = accountsRef.collection('feeds');
               feedsRef.add({
-                url: 'https://www.reddit.com/.rss'
+                url: 'https://feeds.bbci.co.uk/news/rss.xml?edition=uk'
               })
               .then((res) => {
                 console.log('feeds collection created');
