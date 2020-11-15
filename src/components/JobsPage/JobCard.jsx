@@ -77,7 +77,7 @@ const JobCard = ({job, cardType}) => {
                         : null}
                         <div className="job-card--header--item">
                             <p className="job-card--header--item-title">Deadline:</p>
-                            <p className={job.complete ? "job-card--deadline-complete" : "job-card--deadline"}>{job.deadline} </p>
+                            <p className={job.complete ? "job-card--deadline-complete" : "job-card--deadline"}>{job.deadline ? job.deadline : 'n/a'} </p>
                         </div>
                     </div>
                     <div className="job-card--body">

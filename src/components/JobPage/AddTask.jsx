@@ -37,39 +37,42 @@ const AddTask = (props) => {
 
     const submitTask = (event) => {
 
-        if (taskInput && deadlineInput) {
+        if (taskInput) {
             const eventsRef = accountsRef.collection('events');
             
             const eventDate = formatEventDate(deadlineInput); 
     
             const newTask = {
                 task: taskInput,
-                deadline: deadlineInput,
                 numDeadline,
                 jobId: props.jobId,
                 complete: false,
             };
     
             if (expectedInput) newTask.expected = expectedInput;
+            if (deadlineInput) newTask.deadline = deadlineInput;
     
             tasksRef.add(newTask)
             .then(doc => {
                 console.log('success!')
             })
-    
-            eventsRef.add({
-                title: taskInput,
-                start: eventDate,
-                jobId: props.jobId,
-                type: 'task',
-                complete: false
-            })
-            .then((res) => {
-                console.log('event created');
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+            
+            if (newTask.deadline) {
+                eventsRef.add({
+                    title: taskInput,
+                    start: eventDate,
+                    jobId: props.jobId,
+                    type: 'task',
+                    complete: false
+                })
+                .then((res) => {
+                    console.log('event created');
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+
+            }
             props.openForm();
         } else {
             const elements = event.target.parentElement.children;
@@ -79,9 +82,6 @@ const AddTask = (props) => {
                     item.classList.add('add-job--incomplete-field');
                     console.log(item.classList)
                 };
-                if (item.id === 'deadline' && !item.value) {
-                    item.classList.add('add-job--incomplete-field');
-                }
             })
         }
     }
@@ -92,7 +92,7 @@ const AddTask = (props) => {
             <input id="task" className="add-job--input" type="text" placeholder="Task..." onChange={handleChange} />
             <p>Expected Completion Date (optional):</p>
             <input id="expected" className="add-job--input" type="date" onChange={handleChange} />
-            <p>Deadline Date:</p>
+            <p>Deadline Date (optional):</p>
             <input id="deadline" className="add-job--input" type="date" onChange={handleChange} />
             <button className="add-job--btn" onClick={submitTask} >Submit</button>
             <button className="add-job--btn" onClick={props.openForm} >Close</button>
