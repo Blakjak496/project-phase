@@ -41,7 +41,7 @@ const LandingPage = ({click, remember, rememberState}) => {
             <div className="landing-page--section">
                 <div className="landing-page--description-wrapper">
                     <p className="landing-page--description-text">
-                        OrganiseMe is an application disigned to help you keep yourself organised.
+                        OrganiseMe is an application designed to help you keep yourself organised.
                         <br/>
                         The app features lists that allow you to create jobs, and add sub-tasks to those jobs.
                         Sub-tasks can then be marked as complete or incomplete as you progress through your project.

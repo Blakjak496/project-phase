@@ -9,7 +9,6 @@ const SignInForm = (props) => {
     const googleSignIn = () => {
         firebase.auth().signInWithPopup(provider)
         .then((result) => {
-            const token = result.credential.accessToken;
             const user = result.user;
             if (props.rememberMe) {
                 localStorage.setItem('currentUser', JSON.stringify(user))

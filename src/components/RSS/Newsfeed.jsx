@@ -3,15 +3,15 @@ import UserContext from '../UserContext';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { DataGrid } from '@material-ui/data-grid';
-import { formatDate } from '../../utils/utils';
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Pagination from '@material-ui/lab/Pagination';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
+import Modal from 'react-modal';
+
+Modal.setAppElement("#root");
 
 const Parser = require('rss-parser');
 
@@ -33,10 +33,10 @@ const RSSReader = () => {
     const [parsedFeeds, setParsedFeeds] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [feedInput, setFeedInput] = useState('');
-    const [numOfFeeds, setNumOfFeeds] = useState(1);
     const [currentTab, setCurrentTab] = useState('BBC News - Home');
     const [rssPage, setRssPage] = useState(1);
     const [numOfPages, setNumOfPages] = useState(1);
+    const [modalOpen, setModalOpen] = useState(false);
     const { accountsRef } = useContext(UserContext);
 
     const urlsRef = accountsRef.collection('feeds');
@@ -45,7 +45,7 @@ const RSSReader = () => {
 
     const sortItems = (a, b) => b.numDate-a.numDate;
 
-    const parseIt = async (url) => {
+    const parseIt = async (url, id) => {
         const feed = await parseFeed(url);
 
         const pages = [];
@@ -63,7 +63,7 @@ const RSSReader = () => {
             return newItem;
         });
         const sortedItems = itemsWithNumDate.sort(sortItems);
-        const feedObj = {...feed, items: sortedItems, pages};
+        const feedObj = {...feed, items: sortedItems, pages, id};
         return await feedObj;
     }
     
@@ -71,7 +71,7 @@ const RSSReader = () => {
         
         let feedData = [];
         urlList.forEach((doc) => {                
-            const feed = parseIt(doc.url);
+            const feed = parseIt(doc.url, doc.id);
             feedData.push(feed);
         })
         setParsedFeeds(await Promise.all(feedData));
@@ -90,10 +90,12 @@ const RSSReader = () => {
         if (!loading) {
             const docList = feedList.docs.map(doc => {
                 const urlData = doc.data();
-                return urlData;
+                const docObj = {...urlData, id: doc.id};
+                return docObj;
             })
-            setNumOfFeeds(docList.length)
             parseThisList(docList);
+        } else {
+            setIsLoading(true);
         }
         
     }, [feedList, loading])
@@ -128,10 +130,21 @@ const RSSReader = () => {
         setRssPage(page);
     }
 
+    const openFeedModal = () => {
+        setModalOpen(!modalOpen);
+    }
+
+    const deleteFeed = (id) => {
+        urlsRef.doc(id).delete();
+    }
+
     const theme = createMuiTheme({
         palette: {
             primary: {
                 main: '#1d9b1a',
+                light: '#f0f3df',
+                dark: '#232320',
+                contrastText: '#f0f3df'
             },
             secondary: {
                 main: '#f0f3df',
@@ -148,20 +161,53 @@ const RSSReader = () => {
     
         return (
             <div className="rss-reader">
+                <Modal isOpen={modalOpen} className="Modal" overlayClassName="Overlay">
+                    {parsedFeeds.map(feed => {
+                        return (
+                            <div className="rss-modal-btn-box">
+                                <p className="rss-modal-feed-name">{feed.title} </p>
+                                <button onClick={(e) => {deleteFeed(feed.id)}}>Remove</button>
+                            </div>
+
+                        ) 
+                    })}
+                    
+                    <button onClick={openFeedModal}>Close</button>
+                </Modal>
                 <div className="rss-reader--header">
                     <ThemeProvider theme={theme}>
-                        <AppBar position="static" color="primary">
-                            <Tabs value={false} variant="scrollable" scrollButtons="on" indicatorColor="secondary" >
+                        <div className="rss-reader--topbar">
+                            {isLoading ?
+                            <CircularProgress color={"primary"}/>
+                            : <Tabs 
+                                value={false}
+                                variant="scrollable" 
+                                scrollButtons="on" 
+                                indicatorColor="secondary" 
+                                >
                                 {parsedFeeds.map((feed, index) => {
                                     return (
-                                        <Tab key={index} id={feed.title} label={feed.title} onClick={(e) => {handleTabClick(e, feed.pages.length)}} />
+                                        <Tab 
+                                            key={index} 
+                                            id={feed.title} 
+                                            label={feed.title} 
+                                            onClick={(e) => {handleTabClick(e, feed.pages.length)}} />
                                     )
                                 })}
-                            </Tabs>
-                        </AppBar>
+                            </Tabs>}
+                        </div>
                     </ThemeProvider>
-                    <input className="rss-reader--input" value={feedInput} onChange={handleChange} type="text" placeholder="RSS Feed URL..." />
-                    <button className="rss-reader--add" onClick={addFeedUrl}>Add</button>
+                    <input 
+                        className="rss-reader--input" 
+                        value={feedInput} 
+                        onChange={handleChange} 
+                        type="text" 
+                        placeholder="RSS Feed URL..." 
+                        />
+                    <div className="rss-reader--btns">
+                        <button className="rss-reader--btn" onClick={addFeedUrl}>Add</button>
+                        <button className="rss-reader--btn" onClick={openFeedModal}>Feeds</button>
+                    </div>
                 </div>
                 {/* pages go here */}
                 {isLoading ?
@@ -181,6 +227,7 @@ const RSSReader = () => {
                                                     <CardContent className="rss-card--content">
                                                         <h3 className="rss-card--title">{article.title} </h3>
                                                         <p className="rss-card--snippet">{article.contentSnippet} </p>
+                                                        <a className="rss-card--link" href={article.link} target="_blank" rel="noreferrer">Read Article</a>
                                                         <p className="rss-card--date">{article.pubDate} </p>
                                                     </CardContent>
                                                 </Card>

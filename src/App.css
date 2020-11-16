@@ -33,7 +33,7 @@ html {
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--dark-background);
+  background: rgba(0, 0, 0, 0.7);
 }
 
 *::-webkit-scrollbar-thumb {
@@ -185,6 +185,7 @@ html {
   box-sizing: border-box;
   width: 100%;
   margin: 0;
+  margin-top: 3rem;
   padding: 4px 12px;
   justify-content: center;
   align-items: center;
@@ -210,8 +211,8 @@ html {
   width: 100%;
   min-width: 280px;
   height: 3rem;
-  align-items: center;
-  justify-content: flex-end;
+  align-items: flex-end;
+  justify-content: center;
   top: 0;
   background: rgba(0, 0, 0, 0.7);
 }
@@ -234,6 +235,10 @@ html {
   width: 3rem;
   height: 3rem;
   padding: 0;
+  background: none;
+  border: none;
+  align-items: center;
+  justify-content: center;
 }
 
 .MuiList-root {
@@ -378,9 +383,11 @@ html {
 .job-card--wrapper--complete {
   display: flex;
   box-sizing: border-box;
+  width: 90%;
   background: var(--dark-background);
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+  box-shadow: 0px 5px 8px 5px rgba(0, 0, 0, 0.6);
   margin-bottom: 1rem;
 }
 
@@ -803,33 +810,38 @@ html {
   flex-direction: column;
   box-sizing: border-box;
   width: 100%;
-  height: 20%;
+  height: auto;
   min-width: 280px;
   background: var(--primary);
   padding: 4px 12px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 .selected-event--main {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   box-sizing: border-box;
   width: 100%;
-  height: 80%;
+  height: auto;
   min-width: 280px;
   background: var(--dark-low-contrast-neutral);
   padding: 4px 12px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .selected-event--date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 1.3rem;
 }
 
 .selected-event--detail {
   font-size: 1.3rem;
+  margin-top: 0;
 }
 
 .selected-event--item-title {
@@ -837,6 +849,7 @@ html {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .selected-event--main button {
@@ -873,17 +886,18 @@ html {
   flex-direction: column;
   box-sizing: border-box;
   position: absolute;
-  top: 40px;
+  top: 3rem;
   left: 0;
   right: 0;
   bottom: 40px;
   width: 100%;
   min-width: 280px;
   z-index: 100;
-  background: var(--dark-background);
+  background-color: var(--dark-low-contrast-neutral);
   color: var(--light-background);
   align-items: center;
   justify-content: center;
+  overflow-y: auto;
 }
 
 .Modal button {
@@ -935,6 +949,13 @@ html {
   background-color: var(--dark-background);
 }
 
+.rss-reader--topbar {
+  display: flex;
+  width: 100%;
+  height: 3rem;
+  background: var(--primary);
+}
+
 .rss-reader--header {
   display: flex;
   flex-direction: column;
@@ -959,7 +980,13 @@ html {
   padding-left: 1rem;
 }
 
-.rss-reader--add {
+.rss-reader--btns {
+  display: flex;
+  width: 9rem;
+  justify-content: space-evenly;
+}
+
+.rss-reader--btn {
   display: flex;
   box-sizing: border-box;
   width: 4rem;
@@ -972,9 +999,31 @@ html {
   background: var(--primary);
 }
 
-.rss-reader--add:hover {
+.rss-reader--btn:hover {
   cursor: pointer;
   background: var(--primary-minus2);
+}
+
+.rss-reader--feeds-btn {
+  display: flex;
+  box-sizing: border-box;
+  width: 4rem;
+  height: 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+}
+
+.rss-modal-btn-box {
+  display: flex;
+}
+
+.rss-modal-feed-name {
+  display: flex;
+  width: 10rem;
 }
 
 .rss-reader--articles {
@@ -986,6 +1035,7 @@ html {
   height: auto;
   justify-content: center;
   align-items: center;
+  color: var(--light-background);
 }
 
 .rss-reader--page {
@@ -1047,6 +1097,14 @@ html {
   margin-bottom: 0;
 }
 
+.rss-card--link {
+  color: var(--primary);
+}
+
+.rss-card--link:hover {
+  color: var(--primary-minus2);
+}
+
 @media screen and (min-width: 1000px) {
   .landing-page--description-wrapper {
     display: flex;
@@ -1070,6 +1128,7 @@ html {
 
   .dashboard--nav {
     justify-content: center;
+    align-items: center;
   }
 
   .nav-btn {
@@ -1097,10 +1156,6 @@ html {
     text-decoration: none;
     color: var(--dark-background);
     background: var(--primary);
-  }
-
-  .MuiButton-root {
-    display: none;
   }
 
   .burger-button {

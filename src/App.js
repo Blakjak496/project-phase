@@ -33,7 +33,7 @@ function App() {
     accountsRef = firestore.collection('accounts').doc(currentUser.uid);
      
   }
-
+  console.log(activePage)
   useEffect(() => {
     if (localStorage.getItem('currentUser')) {
       const userStr = localStorage.getItem('currentUser');
@@ -131,13 +131,13 @@ function App() {
   
   return (
     <UserProvider value={{currentUser, accountsRef, activePage, setActivePage}}>
-      <div id={"app"} className="App">
+      <div id="app" className="App">
         
         {currentUser ?
         <> 
         <div className="page-header">
-          <Greeting />
           <NavBtns click={signOut} />
+          <Greeting />
           
         </div>
         <div id={"page-body"} className="page-body">

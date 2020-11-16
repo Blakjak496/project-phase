@@ -8,6 +8,8 @@ import UserContext from '../UserContext';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { formatDate } from '../../utils/utils';
 
+Modal.setAppElement("#root");
+
 const CalendarPage = () => {
     const [events, setEvents] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
@@ -77,8 +79,8 @@ const CalendarPage = () => {
 
     useEffect(() => {
         setActivePage('calendar');
-    }, [])
-
+    })
+    
     useEffect(() => {
         if (selectedEvent) setEventOpen(true);
         else setEventOpen(false);
@@ -207,6 +209,10 @@ const CalendarPage = () => {
                      : null}   
                 </div>
                 <div className="selected-event--main">
+                    <span className="selected-event--date">
+                        <p className="selected-event--item-title">Event Type:</p>
+                        <p className="selected-event--detail">{selectedEvent.type} </p>
+                    </span>
                     <p className="selected-event--detail">{selectedEvent.title} </p>
                     <div className="selected-event--btns">
                         <button onClick={closeEventModal} >Close</button>
