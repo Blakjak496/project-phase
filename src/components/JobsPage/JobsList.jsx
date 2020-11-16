@@ -9,18 +9,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
-const JobsList = ({ jobs, jobId }) => {
+const JobsList = ({ jobs, jobId, isLoading }) => {
     const [formOpen, setFormOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const {activePage} = useContext(UserContext);
 
     const openForm = () => {
         setFormOpen(!formOpen)
     }
 
-    useEffect(() => {
-        if (jobs.length) setIsLoading(false);
-    }, [jobs])
     
     let cardType;
     switch(activePage) {

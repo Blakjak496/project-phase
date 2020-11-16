@@ -12,6 +12,7 @@ const JobPage = (props) => {
     const [jobInfo, setJobInfo] = useState({});
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [jobTracked, setJobTracked] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const { accountsRef, activePage, setActivePage } = useContext(UserContext);
     const jobRef = accountsRef.collection('jobs').doc(props.job_id);
     const tasksRef = jobRef.collection('tasks');
@@ -19,7 +20,7 @@ const JobPage = (props) => {
 
     
     
-    const [tasksList, loading, error] = useCollection(query);
+    const [tasksList, loading] = useCollection(query);
 
     useEffect(() => {
         if (!loading) {
@@ -29,6 +30,7 @@ const JobPage = (props) => {
                 return taskWithId;
             });
             setTasks(newTasks);
+            setIsLoading(false);
         }
         jobRef.get().then((res) => {
             setJobInfo(res.data());
@@ -38,7 +40,7 @@ const JobPage = (props) => {
 
     useEffect(() => {
         setActivePage('job');
-    }, [])
+    })
    
     const trackJob = () => {
         jobRef.update({tracked: !jobInfo.tracked})
@@ -65,8 +67,10 @@ const JobPage = (props) => {
                 eventIds.push(doc.id);
                 eventsRef.doc(doc.id).delete();
             })
-            tasksList.forEach(task => {
-                tasksRef.doc(task.id).delete();
+            tasksRef.get().then((res) => {
+                res.docs.forEach((doc) => {
+                    tasksRef.doc(doc.id).delete();
+                })
             })
             jobRef.delete();
         })
@@ -127,7 +131,7 @@ const JobPage = (props) => {
 
             </div>
             <h3 className="job-page--tasks-header">Tasks</h3>
-            <JobsList jobs={tasks} jobId={props.job_id} activePage={activePage} />
+            <JobsList jobs={tasks} jobId={props.job_id} activePage={activePage} isLoading={isLoading} />
             
         </div>
     )
